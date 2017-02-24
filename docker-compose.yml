@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+
+    website:
+        build: .
+        command: >
+            gunicorn -b 0.0.0.0:9000
+            --access-logfile -
+            --reload
+            "fnote.app:create_app()"
+        environment:
+            PYTHONUNBUFFERED: 'true'
+        volumes:
+            - '.:/fnote'
+        ports:
+            - '9000:9000'
+        env_file:
+            - '.env'
