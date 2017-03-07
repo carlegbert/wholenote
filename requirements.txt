@@ -1,6 +1,18 @@
+# app
 Flask==0.12
+
+# server
 gunicorn==19.6.0
 
+# testing
 pytest==3.0.6
 pytest-flask==0.10.0
 pytest-cov==2.4.0
+
+# data
+psycopg2==2.6.2
+Flask-SQLAlchemy==2.1
+SQLAlchemy-utils==0.32.12
+
+# extensions
+flask-debugtoolbar==0.10.0

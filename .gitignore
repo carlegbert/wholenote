@@ -1,2 +1,6 @@
 .cache
 .env
+.coverage
+settings.py
+logs/
+

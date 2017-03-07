@@ -1,0 +1,6 @@
+DEBUG = True
+SECRET_KEY = 'secret_key_goes_here'
+
+# SQLAlchemy settings
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_DATABASE_URL = 'postgresql://<db_username>:<db_password>@postgres:5432/fnote'

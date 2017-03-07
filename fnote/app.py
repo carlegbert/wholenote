@@ -2,6 +2,11 @@ from flask import Flask
 
 from fnote.blueprints.index import index
 from fnote.blueprints.user import user
+#  from fnote.util.db import init_db
+from fnote.extensions import (
+    debug_toolbar,
+    db,
+)
 
 
 def create_app(settings_override=None):
@@ -10,10 +15,27 @@ def create_app(settings_override=None):
     """
     app = Flask(__name__)
 
-    app.register_blueprint(index)
-    app.register_blueprint(user)
-
     if settings_override:
         app.config.update(settings_override)
 
+    app.register_blueprint(index)
+    app.register_blueprint(user)
+    app.config.from_object('fnote.config.settings')
+    extensions(app)
+
+    db.app = app
+    #  init_db()  # TODO: better db creation script
+
     return app
+
+
+def extensions(app):
+    """
+    Add extensions to flask application
+    :param app: Flask application
+    :return: None
+    """
+    debug_toolbar.init_app(app)
+    db.init_app(app)
+
+    return None
