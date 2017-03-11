@@ -3,6 +3,7 @@ from flask import Flask
 from fnote.blueprints.index import index
 from fnote.blueprints.user import user
 #  from fnote.util.db import init_db
+from fnote.errorhandlers import register_errorhandlers
 from fnote.extensions import (
     debug_toolbar,
     db,
@@ -22,6 +23,7 @@ def create_app(settings_override=None):
     app.register_blueprint(user)
     app.config.from_object('fnote.config.settings')
     extensions(app)
+    register_errorhandlers(app)
 
     db.app = app
     #  init_db()  # TODO: better db creation script
