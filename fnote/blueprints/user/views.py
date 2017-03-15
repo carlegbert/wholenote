@@ -1,11 +1,15 @@
 from flask import (
+        abort,
         Blueprint,
         jsonify,
         make_response,
         request,
         )
-
-from fnote.blueprints.user.exceptions import UserExistsError
+from fnote.blueprints.user.exceptions import (
+        UserExistsError,
+        UserNotFoundError,
+        WrongPasswordError
+        )
 from fnote.blueprints.user.models import User
 
 
@@ -14,16 +18,22 @@ user = Blueprint('user', __name__)
 
 @user.route('/api/v1.0/login', methods=['POST'])
 def login():
-    """TODO: Docstring for login
-    :returns: TODO
-
+    """ Accepts JSON login request and returns JSON containing JWT token.
+    :returns: JSON with status code, message, and JWT
     """
-    # Ensure correct data is present
-    # Check for existing user
-    # Check for correct pw
-    # Return JSON with some sort of token + 200
-    # Return JSON with failure message + 400
-    pass
+    try:
+        email = request.json['email']
+        password = request.json['password']
+        jwt = User.get_jwt(email, password)
+        msg = 'Login for {0} successful'.format(email)
+        res = {'message': msg, 'access_token': jwt, 'statusCode': 200}
+        return make_response(jsonify(res), 200)
+    except (UserNotFoundError, WrongPasswordError):
+        res = {'error': 'Login failed (incorrect email or password)',
+               'statusCode': 403}
+        return make_response(jsonify(res), 403)
+    except (AttributeError, TypeError, KeyError):
+        abort(400)
 
 
 @user.route('/api/v1.0/register', methods=['POST'])
@@ -41,9 +51,7 @@ def register():
     except UserExistsError:
         status_code = 400
         res = {'statusCode': 400,
-               'message': 'Account already registered for that email'}
+               'error': 'Account already registered for that email'}
     except (AttributeError, TypeError, KeyError):
-        status_code = 400
-        res = {'statusCode': 400, 'message': 'Data missing from request'}
-
+        abort(400)
     return make_response(jsonify(res), status_code)

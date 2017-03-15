@@ -20,20 +20,20 @@ class TestRegisterViews(object):
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
         msg = 'Account already registered for that email'
-        assert response_data['message'] == msg
+        assert response_data['error'] == msg
         assert response.status_code == 400
 
-    def test_register_no_json(self, client):
+    def test_register_no_data(self, client):
         response = client.post(URL)
         response_data = get_json(response)
-        msg = 'Data missing from request'
-        assert response_data['message'] == msg
+        msg = 'Bad request'
+        assert response_data['error'] == msg
         assert response.status_code == 400
 
     def test_register_bad_data(self, client):
         post_data = {'bad_param': 'testuser@localhost', 'passwrod': 'hunter2'}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
-        msg = 'Data missing from request'
-        assert response_data['message'] == msg
+        msg = 'Bad request'
+        assert response_data['error'] == msg
         assert response.status_code == 400
