@@ -1,5 +1,4 @@
 from flask import (
-        abort,
         Blueprint,
         jsonify,
         make_response,

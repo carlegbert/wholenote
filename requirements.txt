@@ -14,5 +14,9 @@ psycopg2==2.6.2
 Flask-SQLAlchemy==2.1
 SQLAlchemy-utils==0.32.12
 
+# security
+Flask-Hashing==1.1
+Flask-JWT-Extended==1.3.1
+
 # extensions
-flask-debugtoolbar==0.10.0
+flask-debugtoolbar==0.10.1

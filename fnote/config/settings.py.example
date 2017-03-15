@@ -1,5 +1,12 @@
 DEBUG = True
 SECRET_KEY = 'secret_key_goes_here'
+TRAP_HTTP_EXCEPTIONS = True
+
+# flask-hashing settings
+HASHING_METHOD = 'sha256' # or other method
+HASHING_ROUNDS = 1
+HASHING_SALT_PW = 'secret_salt_here'
+HASHING_SALT_JWT = 'other_secret_salt_here'
 
 # SQLAlchemy settings
 SQLALCHEMY_TRACK_MODIFICATIONS = False

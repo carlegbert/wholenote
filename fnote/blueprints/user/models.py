@@ -31,7 +31,7 @@ class User(db.Model):
 
     @classmethod
     def find_by_identity(cls, email):
-        """
+        """ Get user from email
         :param email:
         :type email: str
         :return: User
@@ -40,26 +40,40 @@ class User(db.Model):
 
     @classmethod
     def encrypt_pw(cls, pw_plain):
-        """
-        Encrypt with PBKDF2
+        """ Encrypt with hashing method specified in fnote.config.settings
         :param pw_plain: Plaintext password
         :type pw_plain: str
         :return: str
         """
-        return generate_password_hash(pw_plain)
+        return hashing.hash_value(pw_plain, salt=HASH_SALT_PW)
+
+    @classmethod
+    def get_jwt(cls, email, pw_plain):
+        """ Get JSON web token to be stored by client
+        :param email:
+        :type email: str
+        :param pw_plain:
+        :type pw_plain: str
+        :return: JWT string
+        """
+        u = User.find_by_identity(email)
+        if not u:
+            raise UserNotFoundError(email)
+        if not u.check_password(pw_plain):
+            raise WrongPasswordError(email)
+        tkn = create_access_token(identity=email)
+        return tkn
 
     def check_password(self, pw_plain):
-        """
-        Check plaintext password against database
+        """ Check plaintext password against database
         :param pw_plain: Plaintext password
         :type pw_plain: str
         :return: bool
         """
-        return check_password_hash(self.password, pw_plain)
+        return hashing.check_value(self.password, pw_plain, salt=HASH_SALT_PW)
 
     def update_email(self, new_email):
-        """
-        Update user's email in database. Throws UserExistsError if new email
+        """ Update user's email in database. Throws UserExistsError if new email
         already exists in database. Other validation should be happen in
         views.py
         :param new_email: New email

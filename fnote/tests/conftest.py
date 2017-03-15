@@ -53,10 +53,3 @@ def db(app):
     _db.session.commit()
 
     return _db
-
-
-@pytest.fixture(scope='session')
-def session(db):
-    db.session.begin_nested()
-    yield db.session
-    db.session.rollback

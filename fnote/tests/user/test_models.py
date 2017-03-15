@@ -1,7 +1,11 @@
 import pytest
 
 from fnote.blueprints.user.models import User
-from fnote.blueprints.user.exceptions import UserExistsError
+from fnote.blueprints.user.exceptions import (
+        UserExistsError,
+        UserNotFoundError,
+        WrongPasswordError
+        )
 
 
 class TestUser(object):
@@ -10,7 +14,7 @@ class TestUser(object):
         assert found_user.email == 'testuser@localhost'
 
     def test_find_by_identity_fails(self, db):
-        found_user = User.find_by_identity('nessie@localhost')
+        found_user = User.find_by_identity('nessie@lochness')
         assert not found_user
 
     def test_pw_not_plaintext(self, db):
@@ -61,3 +65,19 @@ class TestUser(object):
         found_user = User.find_by_identity('new_email@localhost')
         assert found_user
         assert found_user.email == 'new_email@localhost'
+
+    def test_get_jwt_success(self, db):
+        User.register(email='jwt_user@localhost', password='hunter2')
+        jwt = User.get_jwt('jwt_user@localhost', 'hunter2')
+        assert jwt
+
+    def test_get_jwt_bad_pw(self, db):
+        User.register(email='jwt_bad_pw@localhost', password='hunter2')
+        with pytest.raises(WrongPasswordError) as exception:
+            User.get_jwt('jwt_bad_pw@localhost', 'hunter1')
+        assert 'jwt_bad_pw@localhost' in str(exception)
+
+    def test_get_jwt_no_user(self, db):
+        with pytest.raises(UserNotFoundError) as exception:
+            User.get_jwt('bigfoot@pnw', 'hunter2')
+        assert 'bigfoot@pnw' in str(exception)

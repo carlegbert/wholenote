@@ -7,6 +7,8 @@ from fnote.errorhandlers import register_errorhandlers
 from fnote.extensions import (
     debug_toolbar,
     db,
+    hashing,
+    jwt,
 )
 
 
@@ -39,5 +41,7 @@ def extensions(app):
     """
     debug_toolbar.init_app(app)
     db.init_app(app)
+    hashing.init_app(app)
+    jwt.init_app(app)
 
     return None
