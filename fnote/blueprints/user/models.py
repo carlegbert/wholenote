@@ -1,20 +1,24 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import relationship
+from flask_jwt_extended import create_access_token
 
-from fnote.blueprints.user.exceptions import UserExistsError
 from fnote.extensions import db
+from fnote.extensions import hashing
+from fnote.config.settings import HASH_SALT_PW
+from fnote.blueprints.user.exceptions import (
+        UserExistsError,
+        UserNotFoundError,
+        WrongPasswordError
+        )
 
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, index=True, nullable=False)
     password = db.Column(db.String(128), nullable=False, server_default='')
-    active = db.Column('is_active', db.Boolean(), nullable=False,
-                       server_default='1')
+    notes = relationship('Note')
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
-
         self.email = kwargs.get('email', '')
         self.password = User.encrypt_pw(kwargs.get('password', ''))
 
@@ -65,7 +69,7 @@ class User(db.Model):
         return tkn
 
     def check_password(self, pw_plain):
-        """ Check plaintext password against database
+        """Check plaintext password against database
         :param pw_plain: Plaintext password
         :type pw_plain: str
         :return: bool
@@ -73,7 +77,7 @@ class User(db.Model):
         return hashing.check_value(self.password, pw_plain, salt=HASH_SALT_PW)
 
     def update_email(self, new_email):
-        """ Update user's email in database. Throws UserExistsError if new email
+        """Update user's email in database. Throws UserExistsError if new email
         already exists in database. Other validation should be happen in
         views.py
         :param new_email: New email
@@ -88,8 +92,7 @@ class User(db.Model):
         return self
 
     def update_password(self, new_password):
-        """
-        Update user's password in database.
+        """Update user's password in database.
         :param new_password: New password
         :type new_password: str
         :return: updated User object
@@ -98,3 +101,9 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
         return self
+
+    def get_notes(self):
+        """Get all notes belonging to user
+        :returns: List of Note objects
+        """
+        return self.notes
