@@ -1,4 +1,5 @@
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 from fnote.extensions import db
 
 
@@ -11,6 +12,7 @@ class Note(db.Model):
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
     title = db.Column(db.String(255), nullable=False)
     text = db.Column(db.Text())
+    user = relationship('User')
 
     def __init__(self, user_id, title='New Note', text=''):
         self.user_id = user_id
@@ -60,3 +62,11 @@ class Note(db.Model):
         """
         db.session.delete(self)
         db.session.commit()
+
+    def to_dict(self):
+        data = {'title': self.title,
+                'text': self.text,
+                'owner': self.user.email,
+                'id': self.id,
+                }
+        return data

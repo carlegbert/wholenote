@@ -50,3 +50,13 @@ class TestNote(object):
         assert note_num == 2
         assert note_one in notes
         assert note_two in notes
+
+    def test_get_dict(self, db):
+        u = User.register(email='note_tester7@localhost', password='hunter2')
+        n = Note(u.id, 'test_note', 'note text').save()
+        data = n.to_dict()
+        assert data
+        assert data['owner'] == u.email
+        assert data['text'] == n.text
+        assert data['title'] == n.title
+        assert data['id'] == n.id
