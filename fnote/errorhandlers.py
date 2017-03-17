@@ -13,7 +13,7 @@ def register_errorhandlers(app):
 
     @app.errorhandler(401)
     def auth_missing(error):
-        data = {'error': 'Missing authentication headers',
+        data = {'error': 'Missing authentication data',
                 'statusCode': 401}
         return make_response(jsonify(data), 401)
 

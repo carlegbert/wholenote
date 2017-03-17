@@ -10,7 +10,7 @@ class TestGetNoteViews(object):
     def test_get_notes_for_user(self, client, db):
         u = User.register(email='notetester@localhost', password='hunter2')
         n = Note(u.id, 'note title', 'note text').save()
-        jwt = User.get_jwt(email=u.email, pw_plain='hunter2')
+        jwt = u.get_jwt()
         auth = {'Authorization': 'Bearer {0}'.format(jwt)}
         response = client.get(URL, headers=auth)
         response_data = get_json(response)
@@ -32,7 +32,7 @@ class TestGetNoteViews(object):
     def test_get_single_note(self, client, db):
         u = User.register(email='notetester2@localhost', password='hunter2')
         n = Note(u.id, 'note title', 'note text').save()
-        jwt = User.get_jwt(u.email, 'hunter2')
+        jwt = u.get_jwt()
         auth = {'Authorization': 'Bearer {0}'.format(jwt)}
         url = '{0}/{1}'.format(URL, n.id)
         response = client.get(url, headers=auth)
@@ -54,7 +54,7 @@ class TestGetNoteViews(object):
         u = User.register(email='notetester4@localhost', password='hunter2')
         u_2 = User.register(email='wronguser@localhost', password='hunter2')
         n = Note(u.id, 'note title', 'note text').save()
-        jwt = User.get_jwt(u_2.email, 'hunter2')
+        jwt = u_2.get_jwt()
         auth = {'Authorization': 'Bearer {0}'.format(jwt)}
         url = '{0}/{1}'.format(URL, n.id)
         response = client.get(url, headers=auth)
@@ -73,7 +73,7 @@ class TestGetNoteViews(object):
         u = User.register(email='notetester6@localhost', password='hunter2')
         n = Note(u.id, 'note title', 'note text').save()
         nid = n.id + 1
-        jwt = User.get_jwt(u.email, 'hunter2')
+        jwt = u.get_jwt()
         auth = {'Authorization': 'Bearer {0}'.format(jwt)}
         url = '{0}/{1}'.format(URL, nid)
         response = client.get(url, headers=auth)

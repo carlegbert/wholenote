@@ -51,21 +51,11 @@ class User(db.Model):
         """
         return hashing.hash_value(pw_plain, salt=HASH_SALT_PW)
 
-    @classmethod
-    def get_jwt(cls, email, pw_plain):
+    def get_jwt(self):
         """ Get JSON web token to be stored by client
-        :param email:
-        :type email: str
-        :param pw_plain:
-        :type pw_plain: str
-        :return: JWT string
+        :return: JWT token
         """
-        u = User.find_by_identity(email)
-        if not u:
-            raise UserNotFoundError(email)
-        if not u.check_password(pw_plain):
-            raise WrongPasswordError(email)
-        tkn = create_access_token(identity=email)
+        tkn = create_access_token(identity=self.email)
         return tkn
 
     def check_password(self, pw_plain):

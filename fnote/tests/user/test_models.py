@@ -66,18 +66,7 @@ class TestUser(object):
         assert found_user
         assert found_user.email == 'new_email@localhost'
 
-    def test_get_jwt_success(self, db):
-        User.register(email='jwt_user@localhost', password='hunter2')
-        jwt = User.get_jwt('jwt_user@localhost', 'hunter2')
+    def test_get_jwt(self, db):
+        u = User.register(email='jwt_user@localhost', password='hunter2')
+        jwt = u.get_jwt()
         assert jwt
-
-    def test_get_jwt_bad_pw(self, db):
-        User.register(email='jwt_bad_pw@localhost', password='hunter2')
-        with pytest.raises(WrongPasswordError) as exception:
-            User.get_jwt('jwt_bad_pw@localhost', 'hunter1')
-        assert 'jwt_bad_pw@localhost' in str(exception)
-
-    def test_get_jwt_no_user(self, db):
-        with pytest.raises(UserNotFoundError) as exception:
-            User.get_jwt('bigfoot@pnw', 'hunter2')
-        assert 'bigfoot@pnw' in str(exception)

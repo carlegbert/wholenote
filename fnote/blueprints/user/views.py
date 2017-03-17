@@ -5,11 +5,7 @@ from flask import (
         make_response,
         request,
         )
-from fnote.blueprints.user.exceptions import (
-        UserExistsError,
-        UserNotFoundError,
-        WrongPasswordError
-        )
+from fnote.blueprints.user.exceptions import UserExistsError
 from fnote.blueprints.user.models import User
 
 
@@ -22,18 +18,21 @@ def login():
     :returns: JSON with status code, message, and JWT
     """
     try:
+        if not request.json:
+            abort(401)
         email = request.json['email']
         password = request.json['password']
-        jwt = User.get_jwt(email, password)
+        u = User.find_by_identity(email)
+        if not u or not u.check_password(password):
+            data = {'error': 'Login failed (incorrect email or password)',
+                    'statusCode': 403}
+            return make_response(jsonify(data), 403)
+        jwt = u.get_jwt()
         msg = 'Login for {0} successful'.format(email)
         res = {'message': msg, 'access_token': jwt, 'statusCode': 200}
         return make_response(jsonify(res), 200)
-    except (UserNotFoundError, WrongPasswordError):
-        res = {'error': 'Login failed (incorrect email or password)',
-               'statusCode': 403}
-        return make_response(jsonify(res), 403)
-    except (AttributeError, TypeError, KeyError):
-        abort(400)
+    except KeyError:
+        abort(422)
 
 
 @user.route('/api/v1.0/register', methods=['POST'])

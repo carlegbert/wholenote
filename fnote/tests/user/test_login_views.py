@@ -36,13 +36,10 @@ class TestLoginViews(object):
         post_data = {'badparam': 'stuff', 'passwrod': 'hunter2'}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
-        msg = 'Bad request'
+        msg = 'Bad authentication data'
         assert response_data['error'] == msg
-        assert response.status_code == 400
+        assert response.status_code == 422
 
     def test_login_no_data(self, client, db):
         response = client.post(URL)
-        response_data = get_json(response)
-        msg = 'Bad request'
-        assert response_data['error'] == msg
-        assert response.status_code == 400
+        assert response.status_code == 401
