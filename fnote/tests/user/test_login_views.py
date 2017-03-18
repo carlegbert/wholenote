@@ -1,4 +1,3 @@
-from fnote.blueprints.user.models import User
 from fnote.tests.json_helpers import post_json, get_json
 
 
@@ -6,18 +5,17 @@ URL = '/api/v1.0/login'
 
 
 class TestLoginViews(object):
-    def test_login_success(self, client, db):
-        User.register(email='logintest@localhost', password='hunter2')
-        post_data = {'email': 'logintest@localhost', 'password': 'hunter2'}
+    def test_login_success(self, client, db, user):
+        post_data = {'email': user.email, 'password': 'hunter2'}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
-        msg = 'Login for logintest@localhost successful'
+        msg = 'Login for {0} successful'.format(user.email)
         assert response_data['access_token']
         assert response_data['message'] == msg
         assert response.status_code == 200
 
-    def test_login_bad_pw(self, client, db):
-        post_data = {'email': 'logintest@localhost', 'password': 'hunter1'}
+    def test_login_bad_pw(self, client, db, user):
+        post_data = {'email': user.email, 'password': 'hunter1'}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
         msg = 'Login failed (incorrect email or password)'

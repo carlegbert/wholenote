@@ -1,4 +1,3 @@
-from fnote.blueprints.user.models import User
 from fnote.tests.json_helpers import post_json, get_json
 
 
@@ -6,7 +5,7 @@ URL = '/api/v1.0/register'
 
 
 class TestRegisterViews(object):
-    def test_register_new_user_success(self, client, db):
+    def test_register_new_user_success(self, client, db, session):
         post_data = {'email': 'newuser@localhost', 'password': 'hunter2'}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
@@ -15,8 +14,7 @@ class TestRegisterViews(object):
         assert response.status_code == 200
 
     def test_register_user_exists(self, client, db):
-        User.register(email='existinguser@localhost', password='hunter2')
-        post_data = {'email': 'existinguser@localhost', 'password': 'hunter2'}
+        post_data = {'email': 'testuser@localhost', 'password': 'hunter2'}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
         msg = 'Account already registered for that email'
