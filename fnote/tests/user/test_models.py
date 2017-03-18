@@ -61,6 +61,22 @@ class TestUser(object):
         assert found_user.email == 'new_email@localhost'
         assert not failed_found_user
 
-    def test_get_jwt(self, db, user):
-        jwt = user.get_jwt()
+    def test_get_refresh_token(self, db, user):
+        jwt = user.get_refresh_token()
         assert jwt
+
+    def test_get_unfresh_token(self, db, user):
+        jwt = user.get_access_token()
+        assert jwt
+
+    def test_get_fresh_token(self, db, user):
+        jwt = user.get_access_token(True)
+        assert jwt
+
+    def test_tokens_different(self, db, user):
+        unfresh = user.get_access_token()
+        fresh = user.get_access_token(True)
+        refresh = user.get_refresh_token()
+        assert fresh != unfresh
+        assert fresh != refresh
+        assert unfresh != refresh

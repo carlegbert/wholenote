@@ -40,7 +40,9 @@ def client(app):
 
 @pytest.fixture(scope='function')
 def session(db):
-    """ Roll back db in between tests using nested session
+    """ Roll back db in between tests using nested session.
+    This fixture should be used for any test that updates the
+    database.
     :param db: Pytest fixture
     :return: None
     """
@@ -88,3 +90,30 @@ def note(db):
     :return: Note object
     """
     return Note.query.filter(Note.title == 'test_note').first()
+
+
+@pytest.fixture(scope='function')
+def refresh_token(user):
+    """Return refresh token from user fixture
+    :param user: Pytest fixture
+    :return: JWT Refresh Token
+    """
+    return user.get_refresh_token()
+
+
+@pytest.fixture(scope='function')
+def unfresh_token(user):
+    """Return unfresh token from user fixture
+    :param user: Pytest fixture
+    :return: Unfresh JWT access token
+    """
+    return user.get_access_token()
+
+
+@pytest.fixture(scope='function')
+def fresh_token(user):
+    """Return fresh token from user fixture
+    :param user: Pytest fixture
+    :return: Fresh jwt access token
+    """
+    return user.get_access_token(True)

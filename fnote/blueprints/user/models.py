@@ -1,14 +1,10 @@
 from sqlalchemy.orm import relationship
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 from fnote.extensions import db
 from fnote.extensions import hashing
 from fnote.config.settings import HASH_SALT_PW
-from fnote.blueprints.user.exceptions import (
-        UserExistsError,
-        UserNotFoundError,
-        WrongPasswordError
-        )
+from fnote.blueprints.user.exceptions import UserExistsError
 
 
 class User(db.Model):
@@ -51,11 +47,20 @@ class User(db.Model):
         """
         return hashing.hash_value(pw_plain, salt=HASH_SALT_PW)
 
-    def get_jwt(self):
-        """ Get JSON web token to be stored by client
-        :return: JWT token
+    def get_refresh_token(self):
+        """ Get refresh JWT, which can be used to get an unfresh access
+        token
+        :return: JWT refresh token
         """
-        tkn = create_access_token(identity=self.email)
+        tkn = create_refresh_token(identity=self.email)
+        return tkn
+
+    def get_access_token(self, fresh=False):
+        """ Get JSON web token to be stored by client, either fresh or unfresh
+        (defaults to unfresh)
+        :return: JWT access token
+        """
+        tkn = create_access_token(identity=self.email, fresh=fresh)
         return tkn
 
     def check_password(self, pw_plain):

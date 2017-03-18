@@ -10,6 +10,7 @@ class TestLoginViews(object):
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
         msg = 'Login for {0} successful'.format(user.email)
+        assert response_data['refresh_token']
         assert response_data['access_token']
         assert response_data['message'] == msg
         assert response.status_code == 200
