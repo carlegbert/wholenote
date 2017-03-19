@@ -1,11 +1,15 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from fnote.extensions import db
+from fnote.extensions import hashids
 
 
 class Note(db.Model):
 
-    """Text object, belonging to a single user."""
+    """Text object, belonging to a single user.
+    The 'hashid' is a short string that serves as the client-facing
+    id. It exists to obfuscate primary keys, not to provide any significant
+    security. It isn't saved to the database."""
 
     __tablename__ = 'note'
     id = db.Column(db.Integer, primary_key=True)
@@ -25,6 +29,7 @@ class Note(db.Model):
         """
         db.session.add(self)
         db.session.commit()
+
         return self
 
     @classmethod
@@ -35,6 +40,14 @@ class Note(db.Model):
         :return: Note object
         """
         return Note.query.filter(Note.id == id).first()
+
+    @classmethod
+    def find_by_hash_id(self, hash_id):
+        """Decode hash_id for faster database lookup
+        :returns: Note object
+        """
+        id = hashids.decode(hash_id)
+        return Note.find_by_id(id)
 
     def update_title(self, new_title):
         """ Change title of note
@@ -67,6 +80,6 @@ class Note(db.Model):
         data = {'title': self.title,
                 'text': self.text,
                 'owner': self.user.email,
-                'id': self.id,
+                'id': hashids.encode(self.id),
                 }
         return data

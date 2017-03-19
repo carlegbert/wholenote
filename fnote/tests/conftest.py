@@ -6,6 +6,7 @@ from fnote.blueprints.user.models import User
 from fnote.blueprints.note.models import Note
 from fnote.config.settings import SQLALCHEMY_DATABASE_URI
 from fnote.extensions import db as _db
+from fnote.extensions import hashids
 
 
 @pytest.fixture(scope='session')
@@ -129,3 +130,12 @@ def auth_header():
     encstr = b64encode(b'testuser@localhost:hunter2').decode('utf-8')
     auth = {'Authorization': 'Basic {0}'.format(encstr)}
     return auth
+
+
+@pytest.fixture(scope='function')
+def hash_id(note):
+    """Return hashed id from seed note
+    :param note: Pytest fixture
+    :return: hash string from note.id
+    """
+    return hashids.encode(note.id)

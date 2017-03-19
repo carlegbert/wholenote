@@ -7,6 +7,7 @@ from flask import (
         )
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from fnote.extensions import hashids
 from fnote.blueprints.user.models import User
 from fnote.blueprints.note.models import Note
 
@@ -48,13 +49,14 @@ def note_no_id():
             return make_response(jsonify(data), 400)
 
 
-@note.route('/api/v1.0/notes/<n_id>', methods=['GET', 'DELETE', 'PUT'])
+@note.route('/api/v1.0/notes/<hash_id>', methods=['GET', 'DELETE', 'PUT'])
 @jwt_required
-def note_by_id(n_id):
+def note_by_id(hash_id):
     """Gets, deletes, or updates single note. Note's owner is checked against
     identity from JWT.
     :return: JSON response.
     """
+    n_id = hashids.decode(hash_id)
     email = get_jwt_identity()
     u = User.find_by_identity(email)
     n = Note.find_by_id(n_id)
@@ -66,10 +68,11 @@ def note_by_id(n_id):
                 'statusCode': 403}
         return make_response(jsonify(data), 403)
     if request.method == 'GET':
-        data = {'title': n.title, 'text': n.text, 'id': n.id}
+        data = n.to_dict()
         return make_response(jsonify(data), 200)
     elif request.method == 'DELETE':
-        data = {'message': 'Note {0} deleted'.format(n.id), 'statusCode': 200}
+        data = {'message': 'Note {0} deleted'.format(hash_id),
+                'statusCode': 200}
         n.delete()
         return make_response(jsonify(data), 200)
     elif request.method == 'PUT':

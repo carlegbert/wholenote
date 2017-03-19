@@ -19,13 +19,14 @@ def create_app(settings_override=None):
     """
     app = Flask(__name__)
 
+    app.config.from_object('fnote.config.settings')
+
     if settings_override:
         app.config.update(settings_override)
 
     app.register_blueprint(index)
     app.register_blueprint(user)
     app.register_blueprint(note)
-    app.config.from_object('fnote.config.settings')
     extensions(app)
     register_errorhandlers(app)
 

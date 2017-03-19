@@ -7,6 +7,9 @@ HASHING_METHOD = 'sha256' # or other method
 HASHING_ROUNDS = 1
 HASHING_SALT_PW = 'secret_salt_here'
 
+# hashid settings
+HASHID_SALT = 'unimportant hashid salt here'
+
 # SQLAlchemy settings
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_DATABASE_URL = 'postgresql://<db_username>:<db_password>@postgres:5432/fnote'
