@@ -15,28 +15,26 @@ user = Blueprint('user', __name__)
 
 @user.route('/api/v1.0/login', methods=['POST'])
 def login():
-    """ Accepts JSON login request.
+    """ Accepts login request with HTTP Basic auth header
     :returns: JSON with status code, message, fresh access token,
     and refresh token.
     """
-    try:
-        if not request.json:
-            abort(401)
-        email = request.json['email']
-        password = request.json['password']
-        u = User.find_by_identity(email)
-        if not u or not u.check_password(password):
-            data = {'error': 'Login failed (incorrect email or password)',
-                    'statusCode': 403}
-            return make_response(jsonify(data), 403)
-        access_token = u.get_access_token(True)
-        refresh_token = u.get_refresh_token()
-        msg = 'Login for {0} successful'.format(email)
-        data = {'message': msg, 'access_token': access_token,
-                'refresh_token': refresh_token, 'statusCode': 200}
-        return make_response(jsonify(data), 200)
-    except KeyError:
+    auth = request.authorization
+    if not auth:
         abort(422)
+    email = auth.username
+    password = auth.password
+    u = User.find_by_identity(email)
+    if not u or not u.check_password(password):
+        data = {'error': 'Login failed (incorrect email or password)',
+                'statusCode': 403}
+        return make_response(jsonify(data), 403)
+    access_token = u.get_access_token(True)
+    refresh_token = u.get_refresh_token()
+    msg = 'Login for {0} successful'.format(email)
+    data = {'message': msg, 'access_token': access_token,
+            'refresh_token': refresh_token, 'statusCode': 200}
+    return make_response(jsonify(data), 200)
 
 
 @user.route('/api/v1.0/refresh', methods=['POST'])

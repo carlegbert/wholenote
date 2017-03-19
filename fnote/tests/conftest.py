@@ -1,3 +1,4 @@
+from base64 import b64encode
 import pytest
 
 from fnote.app import create_app
@@ -117,3 +118,14 @@ def fresh_token(user):
     :return: Fresh jwt access token
     """
     return user.get_access_token(True)
+
+
+@pytest.fixture(scope='function')
+def auth_header():
+    """Return dict object containing b64 encoded
+    Basic Authorization header
+    :return: Authorization header
+    """
+    encstr = b64encode(b'testuser@localhost:hunter2').decode('utf-8')
+    auth = {'Authorization': 'Basic {0}'.format(encstr)}
+    return auth
