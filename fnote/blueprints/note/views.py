@@ -3,6 +3,7 @@ from flask import (
         Blueprint,
         jsonify,
         make_response,
+        request,
         )
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -28,7 +29,7 @@ def get_notes():
     return make_response(jsonify({'notes': data, 'statusCode': 200}), 200)
 
 
-@note.route('/api/v1.0/notes/<n_id>', methods=['GET'])
+@note.route('/api/v1.0/notes/<n_id>', methods=['GET', 'DELETE'])
 @jwt_required
 def get_single_note(n_id):
     """Gets single note. Note's owner is checked against
@@ -45,15 +46,10 @@ def get_single_note(n_id):
         data = {'error': u.email + 'does not have access to that note',
                 'statusCode': 403}
         return make_response(jsonify(data), 403)
-    data = {'title': n.title, 'text': n.text, 'id': n.id}
-    return make_response(jsonify(data), 200)
-
-
-@jwt_required
-@note.route('/api/v1.0/notes/new', methods=['POST'])
-def new_note():
-    """Posts single note.
-    :returns: JSON response including data from created note.
-
-    """
-    abort(500)
+    if request.method == 'GET':
+        data = {'title': n.title, 'text': n.text, 'id': n.id}
+        return make_response(jsonify(data), 200)
+    elif request.method == 'DELETE':
+        data = {'message': 'Note {0} deleted'.format(n.id), 'statusCode': 200}
+        n.delete()
+        return make_response(jsonify(data), 200)

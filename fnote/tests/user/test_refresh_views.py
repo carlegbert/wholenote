@@ -27,6 +27,11 @@ class TestRefreshViews(object):
         response = client.post(URL, headers=auth)
         assert response.status_code == 422
 
+    def test_refresh_wrong_auth(self, client, auth_header):
+        # sending username/password authentication header instead of token
+        response = client.post(URL, headers=auth_header)
+        assert response.status_code == 422
+
     def test_refresh_fresh_in_header(self, client, fresh_token):
         auth = {'Authorization': 'Bearer {0}'.format(fresh_token)}
         response = client.post(URL, headers=auth)
@@ -36,3 +41,11 @@ class TestRefreshViews(object):
         auth = {'Authorization': 'Bearer {0}'.format(unfresh_token)}
         response = client.post(URL, headers=auth)
         assert response.status_code == 422
+
+    def test_get_refresh_and_use(self, client, auth_header):
+        response_one = client.post('/api/v1.0/login', headers=auth_header)
+        refresh_token = get_json(response_one)['refresh_token']
+        refresh_header = {'Authorization': 'Bearer {0}'.format(refresh_token)}
+        response_two = client.post(URL, headers=refresh_header)
+        assert response_one.status_code == 200
+        assert response_two.status_code == 200
