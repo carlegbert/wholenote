@@ -25,9 +25,9 @@ def note_no_id():
     u = User.find_by_identity(email)
     if request.method == 'GET':
         notes = u.get_notes()
-        data = {}
+        data = []
         for n in notes:
-            data[str(n.id)] = {'title': n.title, 'text': n.text, 'id': n.id}
+            data.append(n.to_dict())
         return make_response(jsonify({'notes': data, 'statusCode': 200}), 200)
     elif request.method == 'POST':
         try:
@@ -48,7 +48,7 @@ def note_no_id():
             return make_response(jsonify(data), 400)
 
 
-@note.route('/api/v1.0/notes/<n_id>', methods=['GET', 'DELETE'])
+@note.route('/api/v1.0/notes/<n_id>', methods=['GET', 'DELETE', 'PUT'])
 @jwt_required
 def note_by_id(n_id):
     """Gets, deletes, or updates single note. Note's owner is checked against
@@ -71,4 +71,22 @@ def note_by_id(n_id):
     elif request.method == 'DELETE':
         data = {'message': 'Note {0} deleted'.format(n.id), 'statusCode': 200}
         n.delete()
+        return make_response(jsonify(data), 200)
+    elif request.method == 'PUT':
+        new_data = request.json
+        if not new_data:
+            data = {'error': 'Missing JSON data', 'statusCode': 400}
+            return make_response(jsonify(data), 400)
+        new_text = new_data.get('text', '')
+        new_title = new_data.get('title', '')
+        if not new_text and not new_title:
+            data = {'error': "Missing parameters in JSON data.\n\
+                    Valid parameters: 'title', 'text'", 'statusCode': 400}
+            return make_response(jsonify(data), 400)
+        if new_text and new_text != n.text:
+            n.update_text(new_text)
+        if new_title and new_title != n.title:
+            n.update_title(new_title)
+        n_data = n.to_dict()
+        data = {'message': 'Note updated', 'note': n_data, 'statusCode': 200}
         return make_response(jsonify(data), 200)

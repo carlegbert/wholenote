@@ -11,8 +11,7 @@ class TestGetNoteViews(object):
         response = client.get(URL, headers=auth)
         response_data = get_json(response)
         assert response_data['notes']
-        assert response_data['notes'][str(note.id)]
-        assert response_data['notes'][str(note.id)]['text'] == note.text
+        assert note.to_dict() in response_data['notes']
         assert response.status_code == 200
 
     def test_get_notes_from_refresh(self, client, user, note, refresh_token):
@@ -23,8 +22,7 @@ class TestGetNoteViews(object):
         response = client.get(URL, headers=auth)
         response_data = get_json(response)
         assert response_data['notes']
-        assert response_data['notes'][str(note.id)]
-        assert response_data['notes'][str(note.id)]['text'] == note.text
+        assert note.to_dict() in response_data['notes']
         assert response.status_code == 200
 
     def test_get_notes_bad_jwt(self, client):
@@ -37,9 +35,8 @@ class TestGetNoteViews(object):
         response = client.get(URL)
         assert response.status_code == 401
 
-    def test_get_single_note(self, client, user, note):
-        jwt = user.get_access_token()
-        auth = {'Authorization': 'Bearer {0}'.format(jwt)}
+    def test_get_single_note(self, client, user, note, unfresh_token):
+        auth = {'Authorization': 'Bearer {0}'.format(unfresh_token)}
         url = '{0}/{1}'.format(URL, note.id)
         response = client.get(url, headers=auth)
         response_data = get_json(response)
