@@ -14,27 +14,46 @@ from fnote.blueprints.note.models import Note
 note = Blueprint('note', __name__)
 
 
-@note.route('/api/v1.0/notes', methods=['GET'])
+@note.route('/api/v1.0/notes', methods=['GET', 'POST'])
 @jwt_required
-def get_notes():
-    """Gets all notes from specific user (determined by id from JWT)
+def note_no_id():
+    """Gets all notes from specific user (determined by id from JWT) or posts
+    new note.
     :return: JSON response including array of notes.
     """
     email = get_jwt_identity()
     u = User.find_by_identity(email)
-    notes = u.get_notes()
-    data = {}
-    for n in notes:
-        data[str(n.id)] = {'title': n.title, 'text': n.text, 'id': n.id}
-    return make_response(jsonify({'notes': data, 'statusCode': 200}), 200)
+    if request.method == 'GET':
+        notes = u.get_notes()
+        data = {}
+        for n in notes:
+            data[str(n.id)] = {'title': n.title, 'text': n.text, 'id': n.id}
+        return make_response(jsonify({'notes': data, 'statusCode': 200}), 200)
+    elif request.method == 'POST':
+        try:
+            title = request.json['title']
+            text = request.json['text']
+            n = Note(u.id, title, text).save()
+            note_data = n.to_dict()
+            data = {'message': 'Note created',
+                    'statusCode': 201,
+                    'note': note_data}
+            return make_response(jsonify(data), 201)
+        except KeyError:
+            data = {'error': 'Missing parameters in JSON data',
+                    'statusCode': 400}
+            return make_response(jsonify(data), 400)
+        except TypeError:
+            data = {'error': 'Missing JSON data', 'statusCode': 400}
+            return make_response(jsonify(data), 400)
 
 
 @note.route('/api/v1.0/notes/<n_id>', methods=['GET', 'DELETE'])
 @jwt_required
-def get_single_note(n_id):
-    """Gets single note. Note's owner is checked against
+def note_by_id(n_id):
+    """Gets, deletes, or updates single note. Note's owner is checked against
     identity from JWT.
-    :return: JSON response including data from found note.
+    :return: JSON response.
     """
     email = get_jwt_identity()
     u = User.find_by_identity(email)
