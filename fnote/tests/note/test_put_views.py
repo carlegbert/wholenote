@@ -23,6 +23,17 @@ class TestPutNoteViews(object):
         assert response_data['note']['title'] == 'new_title'
         assert response_data['note']['text'] == 'new_text'
 
+    def test_put_update_date(self, client, user, unfresh_token, session):
+        note = Note(user.id, 'title', 'text').save()
+        old_date = note.last_modified
+        auth = {'Authorization': 'Bearer '+unfresh_token}
+        url = '{0}/{1}'.format(URL, hashids.encode(note.id))
+        data = {'title': 'new_title', 'text': 'new_text'}
+        response = put_json(client, url, data, auth)
+        response_data = get_json(response)
+        new_date = response_data['note']['lastModified']
+        assert new_date != old_date
+
     def test_put_doesnt_insert(self, client, user, unfresh_token, session):
         note = Note(user.id, 'title', 'text').save()
         auth = {'Authorization': 'Bearer '+unfresh_token}

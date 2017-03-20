@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from fnote.extensions import db
@@ -17,6 +19,7 @@ class Note(db.Model):
     title = db.Column(db.String(255), nullable=False)
     text = db.Column(db.Text())
     user = relationship('User')
+    last_modified = db.Column(db.DateTime())
 
     def __init__(self, user_id, title='New Note', text=''):
         self.user_id = user_id
@@ -27,6 +30,7 @@ class Note(db.Model):
         """Save note to database.
         :return: self
         """
+        self.last_modified = datetime.utcnow()
         db.session.add(self)
         db.session.commit()
 
@@ -55,6 +59,7 @@ class Note(db.Model):
         :returns: Self
         """
         self.title = new_title
+        self.last_modified = datetime.utcnow()
         db.session.add(self)
         db.session.commit()
         return self
@@ -65,6 +70,7 @@ class Note(db.Model):
         :returns: Self
         """
         self.text = new_text
+        self.last_modified = datetime.utcnow()
         db.session.add(self)
         db.session.commit()
         return self
@@ -81,5 +87,6 @@ class Note(db.Model):
                 'text': self.text,
                 'owner': self.user.email,
                 'id': hashids.encode(self.id),
+                'lastModified': self.last_modified,
                 }
         return data

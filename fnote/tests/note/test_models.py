@@ -51,3 +51,9 @@ class TestNote(object):
         assert data['text'] == note.text
         assert data['title'] == note.title
         assert data['id'] == hashids.encode(note.id)
+
+    def test_update_changes_date(self, note):
+        old_dt = note.last_modified
+        note.update_title('new_title')
+        new_dt = note.last_modified
+        assert new_dt != old_dt
