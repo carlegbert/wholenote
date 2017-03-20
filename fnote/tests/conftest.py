@@ -64,9 +64,7 @@ def db(app):
 
     # Create single user and single note. these are for use only in tests
     # that will not mutate them.
-    u = User(email='testuser@localhost', password='hunter2')
-    _db.session.add(u)
-    _db.session.commit()
+    u = User.register(email='testuser@localhost', password='hunter2')
     n = Note(u.id, 'test_note', 'text')
     _db.session.add(n)
     _db.session.commit()

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import relationship
 from flask_jwt_extended import create_access_token, create_refresh_token
 
@@ -14,6 +16,11 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=False, server_default='')
     notes = relationship('Note')
 
+    # activity tracking
+    time_of_reg = db.Column(db.DateTime(), nullable=False)
+    login_count = db.Column(db.Integer, nullable=False)
+    last_login = db.Column(db.DateTime(), nullable=False)
+
     def __init__(self, **kwargs):
         self.email = kwargs.get('email', '')
         self.password = User.encrypt_pw(kwargs.get('password', ''))
@@ -24,9 +31,16 @@ class User(db.Model):
         password = kwargs.get('password')
         if User.find_by_identity(email):
             raise UserExistsError(email)
+
         new_user = User(email=email, password=password)
+        now = datetime.utcnow()
+        new_user.time_of_reg = now
+        new_user.last_login = now
+        new_user.login_count = 1
+
         db.session.add(new_user)
         db.session.commit()
+
         return new_user
 
     @classmethod
@@ -53,6 +67,10 @@ class User(db.Model):
         :return: JWT refresh token
         """
         tkn = create_refresh_token(identity=self.email)
+        self.login_count += 1
+        self.last_login = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
         return tkn
 
     def get_access_token(self, fresh=False):

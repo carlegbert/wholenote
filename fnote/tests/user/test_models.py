@@ -1,11 +1,7 @@
 import pytest
 
 from fnote.blueprints.user.models import User
-from fnote.blueprints.user.exceptions import (
-        UserExistsError,
-        UserNotFoundError,
-        WrongPasswordError
-        )
+from fnote.blueprints.user.exceptions import UserExistsError
 
 
 class TestUser(object):
@@ -80,3 +76,12 @@ class TestUser(object):
         assert fresh != unfresh
         assert fresh != refresh
         assert unfresh != refresh
+
+    def test_get_refresh_tracked(self, db, user):
+        old_login_count = user.login_count
+        old_login_date = user.last_login
+        user.get_refresh_token()
+        new_login_count = user.login_count
+        new_login_date = user.last_login
+        assert old_login_count != new_login_count
+        assert old_login_date != new_login_date
