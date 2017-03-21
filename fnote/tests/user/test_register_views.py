@@ -37,3 +37,10 @@ class TestRegisterViews(object):
         msg = 'Bad request'
         assert response_data['error'] == msg
         assert response.status_code == 400
+
+    def test_register_bad_email(self, client):
+        post_data = {'email': 'not_real_address', 'password': 'hunter2'}
+        response = post_json(client, URL, post_data)
+        response_data = get_json(response)
+        assert 'not_real_address' in response_data['error']
+        assert response.status_code == 400

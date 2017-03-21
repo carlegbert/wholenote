@@ -21,3 +21,4 @@ hashids==1.2.0
 
 # extensions
 flask-debugtoolbar==0.10.1
+validate_email==1.3

@@ -5,6 +5,8 @@ from flask import (
         make_response,
         request,
         )
+from validate_email import validate_email
+
 from flask_jwt_extended import jwt_refresh_token_required, get_jwt_identity
 from fnote.blueprints.user.exceptions import UserExistsError
 from fnote.blueprints.user.models import User
@@ -61,6 +63,10 @@ def register():
     """
     try:
         email = request.json['email']
+        data = {'error': email+' is not a valid email address',
+                'statusCode': 400}
+        if not validate_email(email):
+            return make_response(jsonify(data), 400)
         password = request.json['password']
         u = User.register(email=email, password=password)
         access_token = u.get_access_token(True)
