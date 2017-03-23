@@ -34,7 +34,7 @@ class TestLoginViews(object):
         assert response.status_code == 403
 
     def test_login_bad_email(self, client, db):
-        encstr = b64encode(b'not@realuser:hunter2').decode('utf-8')
+        encstr = b64encode(b'not@realuser:hunter2password').decode('utf-8')
         auth = {'Authorization': 'Basic {0}'.format(encstr)}
         response = client.post(URL, headers=auth)
         response_data = get_json(response)
@@ -43,7 +43,7 @@ class TestLoginViews(object):
         assert response.status_code == 403
 
     def test_login_bad_header(self, client, db):
-        encstr = b64encode(b'not@realuser:hunter2').decode('utf-8')
+        encstr = b64encode(b'not@realuser:hunter2password').decode('utf-8')
         auth = {'Authorization': 'WrongWord {0}'.format(encstr)}
         response = client.post(URL, headers=auth)
         assert response.status_code == 422

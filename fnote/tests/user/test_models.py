@@ -14,21 +14,22 @@ class TestUser(object):
         assert not found_user
 
     def test_pw_not_plaintext(self, db, user):
-        assert user.password != 'hunter2'
+        assert user.password != 'hunter2password'
 
     def test_register_new_user(self, db, session):
         user_num = len(User.query.all())
-        User.register(email='testuser2@localhost', password='hunter2')
+        User.register(email='testuser2@localhost', password='hunter2password')
         new_user_num = len(User.query.all())
         assert new_user_num == user_num + 1
 
     def test_register_duplicate_email(self, db):
         with pytest.raises(UserExistsError) as exception:
-            User.register(email='testuser@localhost', password='hunter2')
+            User.register(email='testuser@localhost',
+                          password='hunter2password')
         assert 'testuser@localhost' in str(exception)
 
     def test_check_pw_hash(self, db, user):
-        result = user.check_password('hunter2')
+        result = user.check_password('hunter2password')
         assert result
 
     def test_wrong_pw_fails(self, db, user):
@@ -38,13 +39,13 @@ class TestUser(object):
     def test_update_password(self, db, user, session):
         user.update_password('hunter1')
         check_pw_result = user.check_password('hunter1')
-        check_old_pw_result = user.check_password('hunter2')
+        check_old_pw_result = user.check_password('hunter2password')
         assert check_pw_result
         assert not check_old_pw_result
 
     def test_update_email_fails(self, db, session):
         new_user = User.register(email='updatefail@localhost',
-                                 password='hunter2')
+                                 password='hunter2password')
         with pytest.raises(UserExistsError) as exception:
             new_user.update_email('testuser@localhost')
         assert 'testuser@localhost' in str(exception)

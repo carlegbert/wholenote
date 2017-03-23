@@ -53,7 +53,8 @@ class TestGetNoteViews(object):
         assert response.status_code == 422
 
     def test_single_note_wrong_jwt(self, client, user, session, hash_id):
-        u_2 = User.register(email='wronguser@localhost', password='hunter2')
+        u_2 = User.register(email='wronguser@localhost',
+                            password='hunter2password')
         jwt = u_2.get_access_token()
         auth = {'Authorization': 'Bearer {0}'.format(jwt)}
         url = '{0}/{1}'.format(URL, hash_id)
@@ -67,7 +68,7 @@ class TestGetNoteViews(object):
         response = client.get(url)
         assert response.status_code == 401
 
-    def test_single_note_bad_id(self, client, user, note, unfresh_token, hash_id):
+    def test_single_note_bad_id(self, client, note, unfresh_token, hash_id):
         nid = note.id + 1
         auth = {'Authorization': 'Bearer {0}'.format(unfresh_token)}
         url = '{0}/{1}'.format(URL, hashids.encode(nid))

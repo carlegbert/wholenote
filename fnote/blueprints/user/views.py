@@ -63,11 +63,18 @@ def register():
     """
     try:
         email = request.json['email']
-        data = {'error': email+' is not a valid email address',
-                'statusCode': 400}
-        if not validate_email(email):
-            return make_response(jsonify(data), 400)
         password = request.json['password']
+
+        if not validate_email(email):
+            data = {'error': email+' is not a valid email address',
+                    'statusCode': 400}
+            return make_response(jsonify(data), 400)
+
+        if len(password) < 10:
+            data = {'error': 'Password must be at least 10 characters',
+                    'statusCode': 400}
+            return make_response(jsonify(data), 400)
+
         u = User.register(email=email, password=password)
         access_token = u.get_access_token(True)
         refresh_token = u.get_refresh_token()

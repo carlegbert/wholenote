@@ -64,7 +64,7 @@ def db(app):
 
     # Create single user and single note. these are for use only in tests
     # that will not mutate them.
-    u = User.register(email='testuser@localhost', password='hunter2')
+    u = User.register(email='testuser@localhost', password='hunter2password')
     n = Note(u.id, 'test_note', 'text')
     _db.session.add(n)
     _db.session.commit()
@@ -125,7 +125,7 @@ def auth_header():
     Basic Authorization header
     :return: Authorization header
     """
-    encstr = b64encode(b'testuser@localhost:hunter2').decode('utf-8')
+    encstr = b64encode(b'testuser@localhost:hunter2password').decode('utf-8')
     auth = {'Authorization': 'Basic {0}'.format(encstr)}
     return auth
 
