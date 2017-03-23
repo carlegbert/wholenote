@@ -1,6 +1,6 @@
 from flask import Flask
 
-from fnote.blueprints.index import index
+from fnote.blueprints.page import page
 from fnote.blueprints.user import user
 from fnote.blueprints.note import note
 from fnote.util.db import init_db
@@ -24,7 +24,7 @@ def create_app(settings_override=None):
     if settings_override:
         app.config.update(settings_override)
 
-    app.register_blueprint(index)
+    app.register_blueprint(page)
     app.register_blueprint(user)
     app.register_blueprint(note)
     extensions(app)
