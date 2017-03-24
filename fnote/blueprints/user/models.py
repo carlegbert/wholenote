@@ -15,6 +15,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, index=True, nullable=False)
     password = db.Column(db.String(128), nullable=False, server_default='')
     notes = relationship('Note')
+    verified_email = db.Column(db.Boolean, nullable=False)
 
     # activity tracking
     time_of_reg = db.Column(db.DateTime(), nullable=False)
@@ -37,6 +38,7 @@ class User(db.Model):
         new_user.time_of_reg = now
         new_user.last_login = now
         new_user.login_count = 1
+        new_user.verified_email = False
 
         db.session.add(new_user)
         db.session.commit()
@@ -88,6 +90,15 @@ class User(db.Model):
         :return: bool
         """
         return hashing.check_value(self.password, pw_plain, salt=HASH_SALT_PW)
+
+    def verify_email(self):
+        """Mark user's email as confirmed and allow them to log in
+        :return: None
+        """
+        self.verified_email = True
+        db.session.add(self)
+        db.session.commit()
+        return None
 
     def update_email(self, new_email):
         """Update user's email in database. Throws UserExistsError if new email

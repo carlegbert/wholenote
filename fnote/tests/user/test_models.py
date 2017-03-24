@@ -86,3 +86,11 @@ class TestUser(object):
         new_login_date = user.last_login
         assert old_login_count != new_login_count
         assert old_login_date != new_login_date
+
+    def test_mark_verified(self, db, session):
+        u = User.register(email='testverify@localhost', password='hunter2')
+        ver_before = u.verified_email
+        u.verify_email()
+        ver_after = u.verified_email
+        assert not ver_before
+        assert ver_after

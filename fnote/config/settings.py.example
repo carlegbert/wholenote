@@ -1,6 +1,12 @@
+"""Change values in this file as needed & make a copy titled `settings.py`"""
+
+# general settings
 DEBUG = True
-SECRET_KEY = 'secret_key_goes_here'
 TRAP_HTTP_EXCEPTIONS = True
+
+# secret keys
+SECRET_KEY = 'secret_key_goes_here'
+STS_SECRET_KEY = 'different_secret_key'
 
 # flask-hashing settings
 HASHING_METHOD = 'sha256' # or other method
@@ -12,4 +18,14 @@ HASHID_SALT = 'unimportant hashid salt here'
 
 # SQLAlchemy settings
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-SQLALCHEMY_DATABASE_URL = 'postgresql://<db_username>:<db_password>@postgres:5432/fnote'
+SQLALCHEMY_DATABASE_URL = \
+        'postgresql://<db_username>:<db_password>@postgres:5432/fnote'
+
+# Mail settings, assuming gmail
+MAIL_SERVER = 'smtp.gmail.com'
+MAIL_PORT = 465
+MAIL_USE_SSL = True
+MAIL_USERNAME = 'username@here'
+MAIL_DEFAULT_SENDER = MAIL_USERNAME
+MAIL_PASSWORD = 'passwordgoeshere'
+# Other mail settings as needed, if a different mail server is being used

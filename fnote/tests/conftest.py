@@ -7,6 +7,7 @@ from fnote.blueprints.note.models import Note
 from fnote.config.settings import SQLALCHEMY_DATABASE_URI
 from fnote.extensions import db as _db
 from fnote.extensions import hashids
+from fnote.extensions import mail as _mail
 
 
 @pytest.fixture(scope='session')
@@ -64,7 +65,12 @@ def db(app):
 
     # Create single user and single note. these are for use only in tests
     # that will not mutate them.
+    # Create single user and single note, accessible by using the 'user' and
+    # 'note' fixtures below.  If these are mutated, be sure to use the
+    # 'session' fixture so that they are rolled back to normal for other tests.
     u = User.register(email='testuser@localhost', password='hunter2password')
+    u.verify_email()
+
     n = Note(u.id, 'test_note', 'text')
     _db.session.add(n)
     _db.session.commit()
@@ -137,3 +143,12 @@ def hash_id(note):
     :return: hash string from note.id
     """
     return hashids.encode(note.id)
+
+
+@pytest.fixture(scope='function')
+def mail(app):
+    """Return configured mail object for use in tests
+    :param app: Pytest fixture
+    :return: Mail object
+    """
+    return _mail

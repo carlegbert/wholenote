@@ -10,6 +10,7 @@ from fnote.extensions import (
     db,
     hashing,
     jwt,
+    mail,
 )
 
 
@@ -46,5 +47,6 @@ def extensions(app):
     db.init_app(app)
     hashing.init_app(app)
     jwt.init_app(app)
+    mail.init_app(app)
 
     return None
