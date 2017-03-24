@@ -56,9 +56,3 @@ class TestRegisterViews(object):
         response_data = get_json(response)
         assert 'Password must be at least' in response_data['error']
         assert response.status_code == 400
-
-    def test_register_sends_confirm_email(self, client, session, mail):
-        post_data = {'email': 'testuser2@localhost', 'password': 'hunter2pswd'}
-        with mail.record_messages() as outbox:
-            post_json(client, URL, post_data)
-            assert len(outbox) == 1

@@ -1,4 +1,3 @@
-from fnote.blueprints.user.models import User
 from base64 import b64encode
 import re
 
