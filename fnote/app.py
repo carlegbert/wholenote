@@ -1,5 +1,7 @@
 from flask import Flask
 
+from flask_cors import CORS
+
 from fnote.blueprints.page import page
 from fnote.blueprints.user import user
 from fnote.blueprints.note import note
@@ -25,10 +27,10 @@ def create_app(settings_override=None):
     if settings_override:
         app.config.update(settings_override)
 
+    extensions(app)
     app.register_blueprint(page)
     app.register_blueprint(user)
     app.register_blueprint(note)
-    extensions(app)
     register_errorhandlers(app)
 
     db.app = app
@@ -48,5 +50,6 @@ def extensions(app):
     hashing.init_app(app)
     jwt.init_app(app)
     mail.init_app(app)
+    CORS(app)
 
     return None
