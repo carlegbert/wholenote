@@ -1,0 +1,35 @@
+{
+  "name": "wwwterm",
+  "version": "0.5.0",
+  "description": "personal website styled as working unix terminal",
+  "main": "js/index.js",
+  "repository": "https://github.com/carlegbert/wwwterm",
+  "author": "Carl Egbert <egbertcarl@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack --config webpack.config.prod.js",
+    "dev": "webpack-dev-server --config webpack.config.dev.js",
+    "lint": "eslint js",
+    "doc": "./node_modules/.bin/esdoc"
+  },
+  "devDependencies": {
+    "babel-core": "^6.21.0",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "css-loader": "^0.26.1",
+    "esdoc": "^0.5.2",
+    "eslint-config-airbnb-base": "^11.0.0",
+    "eslint-plugin-babel": "^4.0.0",
+    "eslint-plugin-import": "latest",
+    "html-webpack-plugin": "2",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {
+    "eslint": "^3.12.2",
+    "jquery": "^3.1.1"
+  }
+}
