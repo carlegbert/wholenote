@@ -32,7 +32,7 @@ export function loginForm(err = '', email = '') {
     <div class="err-msg" id="login-err">${err}</div>
     <form id="login-form">
       <input placeholder="email" type="email" id="login-email" value=${email} >
-      <input placeholder="password" type="login-pw" type="password" >
+      <input placeholder="password" id="login-pw" type="password" >
       <button id="login-submit">Log in</button>
     </form>
   `);
@@ -45,11 +45,15 @@ export function registerForm(err = '', email = '') {
     <div class="reg-msg" id="reg-err">${err}</div>
     <form id="reg">
       <input placeholder="email" type="email" id="reg-email" value=${email} >
-      <input placeholder="password" type="reg-pw" type="password" >
-      <input placeholder="confirm password" type="reg-conf" type="password" >
+      <input placeholder="password" id="reg-pw" type="password" >
+      <input placeholder="confirm password" id="reg-conf" type="password" >
       <button id="reg-submit">Register</button>
     </form>
   `);
 
   $('#log-or-reg').html('<a id="login">login</a>');
+}
+
+export function noteList() {
+  $('#main').html('(logged in)');
 }

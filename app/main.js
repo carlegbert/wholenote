@@ -4,11 +4,26 @@ import {
   navbar,
   loginForm,
   registerForm,
+  noteList,
 } from './renders';
+import {
+  login,
+  register,
+  getAccessToken,
+} from './requests';
 
 $(document).ready(() => {
   navbar();
-  loginForm();
+
+  const sessionObject = {
+    aTkn: sessionStorage.getItem('accessToken'),
+  };
+
+  if (sessionObject.aTkn) {
+    getAccessToken(noteList, loginForm);
+  } else {
+    loginForm();
+  }
 
   document.addEventListener('click', (ev) => {
     if (ev.target.id === 'register') {
@@ -21,6 +36,12 @@ $(document).ready(() => {
 
     if (ev.target.id === 'login-submit') {
       ev.preventDefault();
+      login();
+    }
+
+    if (ev.target.id === 'reg-submit') {
+      ev.preventDefault();
+      register();
     }
   });
 });
