@@ -55,5 +55,34 @@ export function registerForm(err = '', email = '') {
 }
 
 export function noteList(notes) {
-  $('#main').html('(logged in)');
+  $('#main').html(`
+    <div class="container">
+      <div class="col-xs-3 text-center" id="note-list">
+        <div class="panel panel-default new-note">
+          <h4 class="new-note">+ new note</h4>
+        </div>
+      </div>
+      <div class="col-xs-9" id="note-detail"></div>
+    </div>
+  `);
+
+  notes.forEach((note) => {
+    $('#note-list').append(`
+      <div class="panel panel-default" id="${note.id}">
+        <h4>${note.title}</h4>
+      </div>
+    `);
+  });
+}
+
+export function newNoteForm() {
+  $('#note-detail').html(`
+    <div class="note-detail-container">
+      <div class="note-title-container">
+        <textarea id="new-title" placeholder="title" />
+        <button id="new-note-submit" class="btn btn-submit">save</button>
+      </div>
+      <textarea id="new-text" placeholder="text" />
+    </div>
+  `);
 }

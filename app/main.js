@@ -2,6 +2,7 @@
 
 import {
   navbar,
+  newNoteForm,
   loginForm,
   registerForm,
 } from './renders';
@@ -11,7 +12,12 @@ import {
   register,
   getAccessToken,
 } from './auth';
-import { getNotes } from './notes';
+import {
+  createNote,
+  getNotes,
+} from './notes';
+
+require('./styles.css');
 
 $(document).ready(() => {
   navbar();
@@ -35,7 +41,7 @@ $(document).ready(() => {
       loginForm();
     }
 
-    if(ev.target.id === 'logout') {
+    if (ev.target.id === 'logout') {
       logout();
     }
 
@@ -47,6 +53,14 @@ $(document).ready(() => {
     if (ev.target.id === 'reg-submit') {
       ev.preventDefault();
       register();
+    }
+
+    if (ev.target.classList.contains('new-note')) {
+      newNoteForm();
+    }
+
+    if (ev.target.id === 'new-note-submit') {
+      createNote();
     }
   });
 });
