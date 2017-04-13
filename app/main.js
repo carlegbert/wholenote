@@ -4,13 +4,14 @@ import {
   navbar,
   loginForm,
   registerForm,
-  noteList,
 } from './renders';
 import {
   login,
+  logout,
   register,
   getAccessToken,
-} from './requests';
+} from './auth';
+import { getNotes } from './notes';
 
 $(document).ready(() => {
   navbar();
@@ -20,7 +21,7 @@ $(document).ready(() => {
   };
 
   if (sessionObject.aTkn) {
-    getAccessToken(noteList, loginForm);
+    getAccessToken(getNotes, loginForm);
   } else {
     loginForm();
   }
@@ -32,6 +33,10 @@ $(document).ready(() => {
 
     if (ev.target.id === 'login') {
       loginForm();
+    }
+
+    if(ev.target.id === 'logout') {
+      logout();
     }
 
     if (ev.target.id === 'login-submit') {

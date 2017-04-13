@@ -1,17 +1,17 @@
 /* eslint-env jquery */
 
-export function navbar(user = '') {
+export function navbar() {
+  const email = localStorage.getItem('currentUser');
   let navContent;
-  if (!user) {
+  if (!email) {
     navContent = '<li id="log-or-reg"></li>';
   } else {
     navContent = `
     <ul class="nav navbar-right">
-      <li>logged in as {user}</li>
+      <li>logged in as ${email}</li>
       <li><a id="account-info">account</a></li>
       <li><a id="logout">log out</a></li>
-    </ul>
-    `;
+    </ul>`;
   }
 
   $('#navbar-header').html(
@@ -54,6 +54,6 @@ export function registerForm(err = '', email = '') {
   $('#log-or-reg').html('<a id="login">login</a>');
 }
 
-export function noteList() {
+export function noteList(notes) {
   $('#main').html('(logged in)');
 }

@@ -2,9 +2,10 @@
 
 import {
   loginForm,
+  navbar,
   registerForm,
-  noteList,
 } from './renders';
+import { getNotes } from './notes';
 
 export function login() {
   const pw = $('#login-pw').val();
@@ -18,10 +19,11 @@ export function login() {
       Authorization: `Basic ${enc}`,
     },
   }).done((res) => {
-    console.log('login successful');
     localStorage.setItem('refreshToken', res.refresh_token);
+    localStorage.setItem('currentUser', email);
     sessionStorage.setItem('accessToken', res.access_token);
-    noteList();
+    navbar();
+    getNotes(res.access_token);
   }).fail((err) => {
     loginForm(err.responseJSON.error, email);
   });
@@ -37,17 +39,30 @@ export function register() {
     type: 'POST',
     contentType: 'application/json',
     data: data,
-  }).done((res) => {
-    console.log('register successful');
+  }).done(() => {
+    $('#main').html(`
+      <div class="jumbotron">
+        <h3 class="text-center">Registration for ${email} successful.
+        Please check your email to verify your account.</h3>
+      </div>
+    `);
   }).fail((err) => {
     registerForm(err.responseJSON.error, email);
   });
 }
 
+export function logout() {
+  localStorage.setItem('refreshToken', '');
+  sessionStorage.setItem('accessToken', '');
+  localStorage.setItem('currentUser', '');
+  navbar();
+  loginForm();
+}
+
 export function getAccessToken(successCallback, failCallback) {
-  // use refresh token to retrieve access token from server
+  // Use refresh token to retrieve access token from server.
   // Because refresh requests can be sent during different circumstances
-  // (on page load or after expiring), different render actions
+  // (on page load or after a token expiring), different render actions
   // are needed depending on the current page state. Callback functions
   // are passed in depending on what we want to happen on succesful or
   // unsuccesful refresh requests.
@@ -58,12 +73,9 @@ export function getAccessToken(successCallback, failCallback) {
     type: 'POST',
     headers: { Authorization: `Bearer ${rTkn}` },
   }).done((res) => {
-    successCallback();
+    successCallback(res.access_token);
     sessionStorage.setItem('accessToken', res.access_token);
-  }).fail((err) => {
-    console.log('refresh fail');
-    console.log(err);
+  }).fail(() => {
     failCallback();
   });
-
 }
