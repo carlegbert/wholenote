@@ -16,8 +16,8 @@ import {
   getAccessTokenRequest,
 } from './auth';
 import {
-  createNote,
-  getNotes,
+  createNoteRequest,
+  getNoteRequest,
 } from './notes';
 
 require('./styles.css');
@@ -25,10 +25,10 @@ require('./styles.css');
 $(document).ready(() => {
   navbar();
 
-  let store = createStore(notesApp);
+  const store = createStore(notesApp);
 
-  if (store.getState().accessToken) {
-    getAccessTokenRequest(store, getNotes, loginForm);
+  if (localStorage.getItem('refreshToken')) {
+    getAccessTokenRequest(store, getNoteRequest, loginForm);
   } else {
     loginForm(store);
   }
@@ -61,7 +61,7 @@ $(document).ready(() => {
     }
 
     if (ev.target.id === 'new-note-submit') {
-      createNote(store);
+      createNoteRequest(store);
     }
   });
 });

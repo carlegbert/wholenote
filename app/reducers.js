@@ -31,6 +31,15 @@ function notesApp(state = initialState, action) {
         userEmail: action.userEmail,
         errMsg: action.errMsg,
       });
+    case types.GET_NOTES:
+      return Object.assign({}, state, {
+        notes: action.notes,
+      });
+    case types.ADD_NOTE:
+      return Object.assign({}, state, {
+        notes: [...state.notes, action.newNote],
+      });
+
     default:
       return state;
   }

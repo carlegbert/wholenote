@@ -12,7 +12,7 @@ import {
   navbar,
   registerForm,
 } from './renders';
-import { getNotes } from './notes';
+import { getNoteRequest } from './notes';
 
 export function loginRequest(store) {
   const pw = $('#login-pw').val();
@@ -31,7 +31,7 @@ export function loginRequest(store) {
     localStorage.setItem('currentUser', email);
     sessionStorage.setItem('accessToken', res.access_token);
     navbar();
-    getNotes(res.access_token);
+    getNoteRequest(store);
   }).fail((err) => {
     const errMsg = err.responseJSON.error || err.responseJSON.msg;
     store.dispatch(authFail(email, errMsg));
@@ -44,7 +44,7 @@ export function registerRequest(store) {
   const password = $('#reg-pw').val();
   const confirm = $('#reg-confirm').val();
   if (password !== confirm) {
-    store.dispatch(authFail(email, "Password's don't match"));
+    store.dispatch(authFail(email, "Passwords don't match"));
     registerForm(store);
     return;
   }
@@ -92,12 +92,12 @@ export function getAccessTokenRequest(store, successCallback, failCallback) {
     type: 'POST',
     headers: { Authorization: `Bearer ${rTkn}` },
   }).done((res) => {
-    successCallback(store);
-    localStorage.setItem('accessToken', res.access_token);
     const userEmail = localStorage.getItem('currentUser');
     // ^^^ api will be updated to send back user's email with refresh request
     // so we don't need to save email in localstorage
     store.dispatch(getAccessToken(userEmail, res.access_token));
+    successCallback(store);
+    localStorage.setItem('accessToken', res.access_token);
   }).fail(() => {
     failCallback(store);
   });

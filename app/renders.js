@@ -58,7 +58,8 @@ export function registerForm(store) {
   $('#log-or-reg').html('<a id="login">login</a>');
 }
 
-export function noteList(notes) {
+export function noteList(store) {
+  const notes = store.getState().notes;
   $('#main').html(`
     <div class="container">
       <div class="col-xs-3 text-center" id="note-list">

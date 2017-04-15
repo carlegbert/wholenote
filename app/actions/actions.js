@@ -1,8 +1,8 @@
 import * as types from './actionTypes';
 
 
-export function addNote(note) {
-  return { type: types.ADD_NOTE, note };
+export function addNote(newNote) {
+  return { type: types.ADD_NOTE, newNote };
 }
 
 export function deleteNote(id) {
@@ -13,8 +13,8 @@ export function updateNote(note) {
   return { type: types.UPDATE_NOTE, note };
 }
 
-export function getNotes() {
-  return { type: types.GET_NOTES };
+export function getNotes(notes) {
+  return { type: types.GET_NOTES, notes };
 }
 
 export function selectNote(id) {
