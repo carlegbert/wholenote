@@ -3,9 +3,12 @@ import { createStore } from 'redux';
 
 import notesApp from './reducers';
 
+import { selectNote } from './actions/actions';
+
 import {
   navbar,
   newNoteForm,
+  noteDetail,
   loginForm,
   registerForm,
 } from './renders';
@@ -18,6 +21,7 @@ import {
 import {
   createNoteRequest,
   getNoteRequest,
+  updateNoteRequest,
 } from './notes';
 
 require('./styles.css');
@@ -62,6 +66,15 @@ $(document).ready(() => {
 
     if (ev.target.id === 'new-note-submit') {
       createNoteRequest(store);
+    }
+
+    if (ev.target.classList.contains('note-detail')) {
+      store.dispatch(selectNote(event.target.id));
+      noteDetail(store);
+    }
+
+    if (ev.target.id === 'update-note-submit') {
+      updateNoteRequest(store);
     }
   });
 });

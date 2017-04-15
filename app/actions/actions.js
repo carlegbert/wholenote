@@ -9,8 +9,8 @@ export function deleteNote(id) {
   return { type: types.DELETE_NOTE, id };
 }
 
-export function updateNote(note) {
-  return { type: types.UPDATE_NOTE, note };
+export function updateNote(updatedNote) {
+  return { type: types.UPDATE_NOTE, updatedNote };
 }
 
 export function getNotes(notes) {

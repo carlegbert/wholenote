@@ -12,14 +12,14 @@ textarea {
   width: 100%;
 }
 
-#new-title {
+#new-title, #update-title {
   margin-bottom: 0px;
   padding-bottom: 0px;
   width: 80%;
   height: 40px;
 }
 
-#new-note-submit {
+#new-note-submit, #update-note-submit {
   width: 18%;
   height: 40px;
   margin: 0px;
@@ -27,7 +27,7 @@ textarea {
   display: inline-block;
 }
 
-#new-text {
+#new-text, #update-text {
   margin-top: 0px;
   padding-top: 0px;
   width: 100%;

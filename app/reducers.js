@@ -39,6 +39,17 @@ function notesApp(state = initialState, action) {
       return Object.assign({}, state, {
         notes: [...state.notes, action.newNote],
       });
+    case types.SELECT_NOTE:
+      return Object.assign({}, state, {
+        selectedNote: state.notes.filter(note => note.id === action.id)[0],
+      });
+    case types.UPDATE_NOTE:
+      return Object.assign({}, state, {
+        notes: [
+          ...state.notes.filter(note => note.id !== action.updatedNote.id),
+          action.updatedNote,
+        ],
+      });
 
     default:
       return state;

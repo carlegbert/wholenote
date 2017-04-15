@@ -73,8 +73,8 @@ export function noteList(store) {
 
   notes.forEach((note) => {
     $('#note-list').append(`
-      <div class="panel panel-default" id="${note.id}">
-        <h4>${note.title}</h4>
+      <div class="panel panel-default note-detail" id="${note.id}">
+        ${note.title}
       </div>
     `);
   });
@@ -84,10 +84,24 @@ export function newNoteForm() {
   $('#note-detail').html(`
     <div class="note-detail-container">
       <div class="note-title-container">
-        <textarea id="new-title" placeholder="title" />
+        <textarea id="new-title" placeholder="new note" />
         <button id="new-note-submit" class="btn btn-submit">save</button>
       </div>
       <textarea id="new-text" placeholder="text" />
+    </div>
+  `);
+}
+
+export function noteDetail(store) {
+  const title = store.getState().selectedNote.title;
+  const text = store.getState().selectedNote.text;
+  $('#note-detail').html(`
+    <div class="note-detail-container">
+      <div class="note-title-container">
+        <textarea id="update-title" placeholder="title">${title}</textarea>
+        <button id="update-note-submit" class="btn btn-submit">save</button>
+      </div>
+      <textarea id="update-text" placeholder="text">${text}</textarea>
     </div>
   `);
 }
