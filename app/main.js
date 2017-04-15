@@ -1,4 +1,7 @@
 /* eslint-env browser, jquery */
+import { createStore } from 'redux';
+
+import notesApp from './reducers';
 
 import {
   navbar,
@@ -7,10 +10,10 @@ import {
   registerForm,
 } from './renders';
 import {
-  login,
-  logout,
-  register,
-  getAccessToken,
+  loginRequest,
+  logoutRequest,
+  registerRequest,
+  getAccessTokenRequest,
 } from './auth';
 import {
   createNote,
@@ -22,37 +25,35 @@ require('./styles.css');
 $(document).ready(() => {
   navbar();
 
-  const sessionObject = {
-    aTkn: sessionStorage.getItem('accessToken'),
-  };
+  let store = createStore(notesApp);
 
-  if (sessionObject.aTkn) {
-    getAccessToken(getNotes, loginForm);
+  if (store.getState().accessToken) {
+    getAccessTokenRequest(store, getNotes, loginForm);
   } else {
-    loginForm();
+    loginForm(store);
   }
 
   document.addEventListener('click', (ev) => {
     if (ev.target.id === 'register') {
-      registerForm();
+      registerForm(store);
     }
 
     if (ev.target.id === 'login') {
-      loginForm();
+      loginForm(store);
     }
 
     if (ev.target.id === 'logout') {
-      logout();
+      logoutRequest(store);
     }
 
     if (ev.target.id === 'login-submit') {
       ev.preventDefault();
-      login();
+      loginRequest(store);
     }
 
     if (ev.target.id === 'reg-submit') {
       ev.preventDefault();
-      register();
+      registerRequest(store);
     }
 
     if (ev.target.classList.contains('new-note')) {
@@ -60,7 +61,7 @@ $(document).ready(() => {
     }
 
     if (ev.target.id === 'new-note-submit') {
-      createNote();
+      createNote(store);
     }
   });
 });

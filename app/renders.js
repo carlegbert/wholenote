@@ -1,6 +1,6 @@
-/* eslint-env jquery */
+/* eslint-env browser, jquery */
 
-export function navbar() {
+export function navbar(store) {
   const email = localStorage.getItem('currentUser');
   let navContent;
   if (!email) {
@@ -27,9 +27,11 @@ export function navbar() {
     </nav>`);
 }
 
-export function loginForm(err = '', email = '') {
+export function loginForm(store) {
+  const email = store.getState().userEmail || '';
+  const errMsg = store.getState().errMsg || '';
   $('#main').html(`
-    <div class="err-msg" id="login-err">${err}</div>
+    <div class="err-msg"><h3>${errMsg}</h3><div>
     <form id="login-form">
       <input placeholder="email" type="email" id="login-email" value=${email} >
       <input placeholder="password" id="login-pw" type="password" >
@@ -40,9 +42,11 @@ export function loginForm(err = '', email = '') {
   $('#log-or-reg').html('<a id="register">register</a>');
 }
 
-export function registerForm(err = '', email = '') {
+export function registerForm(store) {
+  const email = store.getState().userEmail || '';
+  const errMsg = store.getState().errMsg || '';
   $('#main').html(`
-    <div class="reg-msg" id="reg-err">${err}</div>
+    <div class="err-msg"><h3>${errMsg}</h3><div>
     <form id="reg">
       <input placeholder="email" type="email" id="reg-email" value=${email} >
       <input placeholder="password" id="reg-pw" type="password" >

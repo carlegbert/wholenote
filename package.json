@@ -11,7 +11,8 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "jquery": "^3.2.1"
+    "jquery": "^3.2.1",
+    "redux": "^3.6.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
