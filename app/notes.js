@@ -3,10 +3,14 @@
 import {
   addNote,
   getNotes,
+  deleteNote,
+  selectNote,
   updateNote,
 } from './actions/actions';
 
 import {
+  allNoteElements,
+  newNoteForm,
   noteList,
 } from './renders';
 
@@ -20,7 +24,7 @@ export function getNoteRequest(store) {
     headers: { Authorization: `Bearer ${aTkn}` },
   }).done((res) => {
     store.dispatch(getNotes(res.notes));
-    noteList(store);
+    allNoteElements(store);
   });
 }
 
@@ -39,6 +43,7 @@ export function createNoteRequest(store) {
     data,
   }).done((res) => {
     store.dispatch(addNote(res.note));
+    store.dispatch(selectNote(res.note.id));
     noteList(store);
   }).fail((err) => {
     console.log('failure');
@@ -64,5 +69,23 @@ export function updateNoteRequest(store) {
     if (oldTitle !== res.note.title) noteList(store);
   }).fail((err) => {
     console.log('failure');
+  });
+}
+
+export function deleteNoteRequest(store) {
+  const id = store.getState().selectedNote.id;
+  const aTkn = store.getState().accessToken;
+  $.ajax({
+    url: `http://localhost:9000/api/v1.0/notes/${id}`,
+    crossDomain: true,
+    type: 'DELETE',
+    headers: { Authorization: `Bearer ${aTkn}` },
+  }).done(() => {
+    store.dispatch(deleteNote(id));
+    store.dispatch(selectNote(null));
+    noteList(store);
+    newNoteForm(store);
+  }).fail((err) => {
+    console.log(err);
   });
 }

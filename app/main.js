@@ -21,6 +21,7 @@ import {
 import {
   createNoteRequest,
   getNoteRequest,
+  deleteNoteRequest,
   updateNoteRequest,
 } from './notes';
 
@@ -75,6 +76,10 @@ $(document).ready(() => {
 
     if (ev.target.id === 'update-note-submit') {
       updateNoteRequest(store);
+    }
+
+    if (ev.target.id === 'delete-note') {
+      deleteNoteRequest(store);
     }
   });
 });

@@ -50,7 +50,11 @@ function notesApp(state = initialState, action) {
           action.updatedNote,
         ],
       });
-
+    case types.DELETE_NOTE:
+      console.log(state.notes.filter(note => note.id !== action.id));
+      return Object.assign({}, state, {
+        notes: state.notes.filter(note => note.id !== action.id),
+      });
     default:
       return state;
   }

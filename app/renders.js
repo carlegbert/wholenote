@@ -60,15 +60,7 @@ export function registerForm(store) {
 
 export function noteList(store) {
   const notes = store.getState().notes;
-  $('#main').html(`
-    <div class="container">
-      <div class="col-xs-3 text-center" id="note-list">
-        <div class="panel panel-default note-li" id="new-note">+</div>
-      </div>
-      <div class="col-xs-9" id="note-detail"></div>
-    </div>
-  `);
-
+  $('#note-list').html('');
   notes.forEach((note) => {
     $('#note-list').append(`
       <div class="panel panel-default note-li note-detail-link" id="${note.id}">
@@ -95,6 +87,7 @@ export function noteDetail(store) {
   const text = store.getState().selectedNote.text;
   $('#note-detail').html(`
     <div class="note-detail-container">
+      <button class="btn btn-danger" id="delete-note">delete</button>
       <div class="note-title-container">
         <textarea id="update-title" placeholder="title">${title}</textarea>
         <button id="update-note-submit" class="btn btn-submit">save</button>
@@ -102,4 +95,24 @@ export function noteDetail(store) {
       <textarea id="update-text" placeholder="text">${text}</textarea>
     </div>
   `);
+}
+
+export function allNoteElements(store) {
+  $('#main').html(`
+    <div class="container">
+      <div class="col-xs-3 text-center">
+        <div class="panel panel-default note-li" id="new-note">+</div>
+        <div id="note-list"></div>
+      </div>
+      <div class="col-xs-9" id="note-detail"></div>
+    </div>
+  `);
+
+  noteList(store);
+
+  if (store.getState().notes.length === 0 || !store.getState().selectedNote) {
+    newNoteForm();
+  } else {
+    noteDetail(store);
+  }
 }
