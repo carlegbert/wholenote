@@ -1,7 +1,7 @@
 /* eslint-env browser, jquery */
 
 export function navbar(store) {
-  const email = localStorage.getItem('currentUser');
+  const email = store.getState().userEmail;
   let navContent;
   if (!email) {
     navContent = '<li id="log-or-reg"></li>';
@@ -50,7 +50,7 @@ export function registerForm(store) {
     <form id="reg">
       <input placeholder="email" type="email" id="reg-email" value=${email} >
       <input placeholder="password" id="reg-pw" type="password" >
-      <input placeholder="confirm password" id="reg-conf" type="password" >
+      <input placeholder="confirm password" id="reg-confirm" type="password" >
       <button id="reg-submit">Register</button>
     </form>
   `);
@@ -63,9 +63,7 @@ export function noteList(store) {
   $('#main').html(`
     <div class="container">
       <div class="col-xs-3 text-center" id="note-list">
-        <div class="panel panel-default new-note">
-          <h4 class="new-note">+ new note</h4>
-        </div>
+        <div class="panel panel-default note-li" id="new-note">+</div>
       </div>
       <div class="col-xs-9" id="note-detail"></div>
     </div>
@@ -73,7 +71,7 @@ export function noteList(store) {
 
   notes.forEach((note) => {
     $('#note-list').append(`
-      <div class="panel panel-default note-detail" id="${note.id}">
+      <div class="panel panel-default note-li note-detail-link" id="${note.id}">
         ${note.title}
       </div>
     `);

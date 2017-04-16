@@ -27,9 +27,9 @@ import {
 require('./styles.css');
 
 $(document).ready(() => {
-  navbar();
-
   const store = createStore(notesApp);
+
+  navbar(store);
 
   if (localStorage.getItem('refreshToken')) {
     getAccessTokenRequest(store, getNoteRequest, loginForm);
@@ -60,7 +60,7 @@ $(document).ready(() => {
       registerRequest(store);
     }
 
-    if (ev.target.classList.contains('new-note')) {
+    if (ev.target.id === 'new-note') {
       newNoteForm();
     }
 
@@ -68,7 +68,7 @@ $(document).ready(() => {
       createNoteRequest(store);
     }
 
-    if (ev.target.classList.contains('note-detail')) {
+    if (ev.target.classList.contains('note-detail-link')) {
       store.dispatch(selectNote(event.target.id));
       noteDetail(store);
     }

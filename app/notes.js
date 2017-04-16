@@ -38,7 +38,6 @@ export function createNoteRequest(store) {
     contentType: 'application/json',
     data,
   }).done((res) => {
-    console.log(res.note.id);
     store.dispatch(addNote(res.note));
     noteList(store);
   }).fail((err) => {

@@ -30,7 +30,7 @@ export function loginRequest(store) {
     store.dispatch(login(email, res.access_token));
     localStorage.setItem('currentUser', email);
     sessionStorage.setItem('accessToken', res.access_token);
-    navbar();
+    navbar(store);
     getNoteRequest(store);
   }).fail((err) => {
     const errMsg = err.responseJSON.error || err.responseJSON.msg;

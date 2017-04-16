@@ -12,6 +12,10 @@ textarea {
   width: 100%;
 }
 
+.note-li {
+  font-size: 2em;
+}
+
 #new-title, #update-title {
   margin-bottom: 0px;
   padding-bottom: 0px;
