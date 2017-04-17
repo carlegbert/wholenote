@@ -57,8 +57,8 @@ export function registerRequest(store) {
     data,
   }).done(() => {
     $('#main').html(`
-      <div class="jumbotron">
-        <h3 class="text-center">Registration for ${email} successful.
+      <div class="col-xs-6 col-xs-offset-3 reg-success text-center">
+        <h3>Registration for ${email} successful.
         Please check your email to verify your account.</h3>
       </div>
     `);
@@ -78,13 +78,14 @@ export function logoutRequest(store) {
   loginForm(store);
 }
 
-export function getAccessTokenRequest(store, successCallback, failCallback) {
+export function accessTokenRequest(store, successCallbacks, failCallback) {
   // Use refresh token to retrieve access token from server.
   // Because refresh requests can be sent during different circumstances
   // (on page load or after a token expiring), different render actions
   // are needed depending on the current page state. Callback functions
   // are passed in depending on what we want to happen on succesful or
   // unsuccesful refresh requests. Redux store is passed to callback functions.
+  // successCallbacks is an array of functions; failCallback is a single function.
   const rTkn = localStorage.getItem('refreshToken');
   $.ajax({
     url: 'http://localhost:9000/api/v1.0/refresh',
@@ -92,11 +93,8 @@ export function getAccessTokenRequest(store, successCallback, failCallback) {
     type: 'POST',
     headers: { Authorization: `Bearer ${rTkn}` },
   }).done((res) => {
-    const userEmail = localStorage.getItem('currentUser');
-    // ^^^ api will be updated to send back user's email with refresh request
-    // so we don't need to save email in localstorage
-    store.dispatch(getAccessToken(userEmail, res.access_token));
-    successCallback(store);
+    store.dispatch(getAccessToken(res.email, res.access_token));
+    successCallbacks.forEach(callback => callback(store));
     localStorage.setItem('accessToken', res.access_token);
   }).fail(() => {
     failCallback(store);

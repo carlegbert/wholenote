@@ -1,6 +1,24 @@
+body {
+  font-family: "inconsolata", "monospace";
+}
 textarea {
   resize: none;
   border: solid black 1px;
+  width: 100%;
+  border: 0px;
+}
+
+textarea:focus {
+  outline: none;
+}
+
+input {
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  font-size: 2em;
+  margin-bottom: 25px;
+  border-radius: 5px;
 }
 
 .note-detail-container {
@@ -8,22 +26,36 @@ textarea {
 }
 
 .note-title-container {
-  height: 40px;
+  height: 50px;
   width: 100%;
 }
 
 .note-li {
   font-size: 2em;
-}
-
-#new-title, #update-title {
+  border-radius: 0px;
+  border: 0px;
+  margin-top: 0px;
   margin-bottom: 0px;
-  padding-bottom: 0px;
-  width: 80%;
-  height: 40px;
+  border-top: solid #cdcdcd 2px;
+  border-bottom: solid #eee 2px;
+  background-color: #eee;
 }
 
-#new-note-submit, #update-note-submit {
+.selected-note-li {
+  color: rgba(50, 100, 255, .8);
+}
+
+#new-note {
+  background-color: rgba(0, 153, 51, .2);
+  border: 0px;
+  color: green;
+}
+
+#new-note.selected-note-li {
+  background-color: rgba(0, 153, 51, .4);
+}
+
+.btn {
   width: 18%;
   height: 40px;
   margin: 0px;
@@ -31,9 +63,50 @@ textarea {
   display: inline-block;
 }
 
+.auth-btn {
+  font-size: 1.5em;
+  width: 30%;
+}
+
+#new-title, #update-title {
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  width: 100%;
+  height: 50px;
+  font-size: 33px;
+  border: 0px;
+  border-bottom: 1px solid black;
+}
+
 #new-text, #update-text {
   margin-top: 0px;
   padding-top: 0px;
-  width: 100%;
   height: 90%;
+  font-size: 20px;
+  border-top: 1px solid black;
+}
+
+.navlink:hover {
+  cursor: pointer;
+}
+
+.navbar-header {
+  font-size: 2em;
+  margin-bottom: 30px;
+}
+
+#navbar-header {
+  margin-bottom: 30px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.reg-success {
+  margin-top: 40px;
+}
+
+#about-page {
+  display: none;
 }

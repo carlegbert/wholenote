@@ -11,10 +11,11 @@ import {
 import {
   allNoteElements,
   newNoteForm,
+  noteDetail,
   noteList,
 } from './renders';
 
-import { getAccessTokenRequest, loginRequest } from './auth';
+import { accessTokenRequest, loginRequest } from './auth';
 
 export function getNoteRequest(store) {
   const aTkn = store.getState().accessToken;
@@ -28,14 +29,14 @@ export function getNoteRequest(store) {
     allNoteElements(store);
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      getAccessTokenRequest(store, getNoteRequest, loginRequest);
+      accessTokenRequest(store, [getNoteRequest], loginRequest);
     }
   });
 }
 
 export function createNoteRequest(store) {
   const aTkn = store.getState().accessToken;
-  const title = $('#new-title').val();
+  const title = $('#new-title').val() || 'new note';
   const text = $('#new-text').val();
   const data = JSON.stringify({ title, text });
 
@@ -50,15 +51,18 @@ export function createNoteRequest(store) {
     store.dispatch(addNote(res.note));
     store.dispatch(selectNote(res.note.id));
     noteList(store);
+    noteDetail(store);
+    $('.selected-note-li').removeClass('selected-note-li');
+    $(`#${res.note.id}`).addClass('selected-note-li');
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      getAccessTokenRequest(store, createNoteRequest, loginRequest);
+      accessTokenRequest(store, [createNoteRequest], loginRequest);
     }
   });
 }
 
 export function updateNoteRequest(store) {
-  const title = $('#update-title').val();
+  const title = $('#update-title').val() || 'untitled note';
   const text = $('#update-text').val();
   const data = JSON.stringify({ title, text });
   const aTkn = store.getState().accessToken;
@@ -78,7 +82,7 @@ export function updateNoteRequest(store) {
     }
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      getAccessTokenRequest(store, updateNoteRequest, loginRequest);
+      accessTokenRequest(store, [updateNoteRequest], loginRequest);
     }
   });
 }
@@ -98,7 +102,7 @@ export function deleteNoteRequest(store) {
     newNoteForm(store);
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      getAccessTokenRequest(store, deleteNoteRequest, loginRequest);
+      accessTokenRequest(store, [deleteNoteRequest], loginRequest);
     }
   });
 }

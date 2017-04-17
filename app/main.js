@@ -6,6 +6,7 @@ import notesApp from './reducers';
 import { selectNote } from './actions/actions';
 
 import {
+  about,
   navbar,
   newNoteForm,
   noteDetail,
@@ -16,7 +17,7 @@ import {
   loginRequest,
   logoutRequest,
   registerRequest,
-  getAccessTokenRequest,
+  accessTokenRequest,
 } from './auth';
 import {
   createNoteRequest,
@@ -30,15 +31,21 @@ require('./styles.css');
 $(document).ready(() => {
   const store = createStore(notesApp);
 
-  navbar(store);
-
   if (localStorage.getItem('refreshToken')) {
-    getAccessTokenRequest(store, getNoteRequest, loginForm);
+    accessTokenRequest(store, [getNoteRequest, navbar], loginForm);
   } else {
+    navbar(store);
     loginForm(store);
   }
 
   document.addEventListener('click', (ev) => {
+    if (ev.target.id === 'about' || event.target.id === 'close-about') {
+      $('#about-page').toggle();
+      $('#main').toggle();
+      $('#about-link').toggle();
+      $('#back-link').toggle();
+    }
+
     if (ev.target.id === 'register') {
       registerForm(store);
     }
@@ -62,6 +69,8 @@ $(document).ready(() => {
     }
 
     if (ev.target.id === 'new-note') {
+      $('.selected-note-li').removeClass('selected-note-li');
+      $(`#new-note`).addClass('selected-note-li');
       newNoteForm();
     }
 
@@ -71,6 +80,8 @@ $(document).ready(() => {
 
     if (ev.target.classList.contains('note-detail-link')) {
       store.dispatch(selectNote(event.target.id));
+      $('.selected-note-li').removeClass('selected-note-li');
+      $(`#${event.target.id}`).addClass('selected-note-li');
       noteDetail(store);
     }
 
