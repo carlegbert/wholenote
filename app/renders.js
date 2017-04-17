@@ -62,7 +62,7 @@ export function noteList(store) {
   const notes = store.getState().notes;
   $('#note-list').html('');
   notes.forEach((note) => {
-    $('#note-list').append(`
+    $('#note-list').prepend(`
       <div class="panel panel-default note-li note-detail-link" id="${note.id}">
         ${note.title}
       </div>

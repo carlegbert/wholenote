@@ -14,6 +14,7 @@ import {
   noteList,
 } from './renders';
 
+import { getAccessTokenRequest, loginRequest } from './auth';
 
 export function getNoteRequest(store) {
   const aTkn = store.getState().accessToken;
@@ -25,6 +26,10 @@ export function getNoteRequest(store) {
   }).done((res) => {
     store.dispatch(getNotes(res.notes));
     allNoteElements(store);
+  }).fail((err) => {
+    if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
+      getAccessTokenRequest(store, getNoteRequest, loginRequest);
+    }
   });
 }
 
@@ -46,7 +51,9 @@ export function createNoteRequest(store) {
     store.dispatch(selectNote(res.note.id));
     noteList(store);
   }).fail((err) => {
-    console.log('failure');
+    if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
+      getAccessTokenRequest(store, createNoteRequest, loginRequest);
+    }
   });
 }
 
@@ -66,9 +73,13 @@ export function updateNoteRequest(store) {
   }).done((res) => {
     const oldTitle = store.getState().selectedNote.title;
     store.dispatch(updateNote(res.note));
-    if (oldTitle !== res.note.title) noteList(store);
+    if (oldTitle !== res.note.title) {
+      $(`#${id}`).html(res.note.title);
+    }
   }).fail((err) => {
-    console.log('failure');
+    if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
+      getAccessTokenRequest(store, updateNoteRequest, loginRequest);
+    }
   });
 }
 
@@ -86,6 +97,8 @@ export function deleteNoteRequest(store) {
     noteList(store);
     newNoteForm(store);
   }).fail((err) => {
-    console.log(err);
+    if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
+      getAccessTokenRequest(store, deleteNoteRequest, loginRequest);
+    }
   });
 }
