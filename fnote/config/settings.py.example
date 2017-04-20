@@ -11,14 +11,14 @@ STS_SECRET_KEY = 'different_secret_key'
 # flask-hashing settings
 HASHING_METHOD = 'sha256' # or other method
 HASHING_ROUNDS = 1
-HASHING_SALT_PW = 'secret_salt_here'
+HASH_SALT_PW = 'secret_salt_here'
 
 # hashid settings
 HASHID_SALT = 'unimportant hashid salt here'
 
 # SQLAlchemy settings
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-SQLALCHEMY_DATABASE_URL = \
+SQLALCHEMY_DATABASE_URI = \
         'postgresql://<db_username>:<db_password>@postgres:5432/fnote'
 
 # Mail settings, assuming gmail
