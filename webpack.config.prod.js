@@ -1,22 +1,6 @@
 const Webpack = require('webpack');
 const path = require('path');
-
-/** Depending on how the project is being served, this plugin
- *  may be wanted.
- *
- * const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
- *   template: path.join(__dirname, '/app/index.html'),
- *   filename: 'index.html',
- *   inject: 'head',
- * });
- *
-**/
-
-const jqPlugin = new Webpack.ProvidePlugin({
-  $: 'jquery',
-  jQuery: 'jquery',
-  'window.jQuery': 'jquery',
-});
+const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: path.join(__dirname, '/app/main.js'),
@@ -37,11 +21,20 @@ module.exports = {
     path: path.join(__dirname, '/build'),
   },
   plugins: [
-    jqPlugin,
     new Webpack.optimize.OccurrenceOrderPlugin(true),
     new Webpack.optimize.UglifyJsPlugin({
       compress: { warnings: false },
       sourceMap: false,
+    }),
+    new HTMLWebpackPlugin({
+      template: path.join(__dirname, '/app/index.html'),
+      filename: 'index.html',
+      inject: 'head',
+    }),
+    new Webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
     }),
   ],
 };
