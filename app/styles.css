@@ -1,6 +1,7 @@
 body {
   font-family: "inconsolata", "monospace";
 }
+
 textarea {
   resize: none;
   border: solid black 1px;

@@ -78,14 +78,14 @@ export function logoutRequest(store) {
   loginForm(store);
 }
 
-export function accessTokenRequest(store, successCallbacks, failCallback) {
+export function accessTokenRequest(store, successCallbacks, failCallbacks) {
   // Use refresh token to retrieve access token from server.
   // Because refresh requests can be sent during different circumstances
   // (on page load or after a token expiring), different render actions
   // are needed depending on the current page state. Callback functions
   // are passed in depending on what we want to happen on succesful or
   // unsuccesful refresh requests. Redux store is passed to callback functions.
-  // successCallbacks is an array of functions; failCallback is a single function.
+  // successCallbacks and failCallbacks should both be arrays of functions.
   const rTkn = localStorage.getItem('refreshToken');
   $.ajax({
     url: 'http://localhost:9000/api/v1.0/refresh',
@@ -95,8 +95,10 @@ export function accessTokenRequest(store, successCallbacks, failCallback) {
   }).done((res) => {
     store.dispatch(getAccessToken(res.email, res.access_token));
     successCallbacks.forEach(callback => callback(store));
-    localStorage.setItem('accessToken', res.access_token);
+    sessionStorage.setItem('accessToken', res.access_token);
   }).fail(() => {
-    failCallback(store);
+    failCallbacks.forEach(callback => callback(store));
+    sessionStorage.setItem('accessToken', ''); // clear old access token on failure
+    store.dispatch(getAccessToken(res.email, null));
   });
 }

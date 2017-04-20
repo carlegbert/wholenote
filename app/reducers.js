@@ -13,6 +13,7 @@ function notesApp(state = initialState, action) {
       return Object.assign({}, state, {
         userEmail: action.userEmail,
         accessToken: action.accessToken,
+        errMsg: null,
       });
     case types.LOGOUT:
       return Object.assign({}, state, {
@@ -20,6 +21,7 @@ function notesApp(state = initialState, action) {
         accessToken: null,
         notes: [],
         selectedNote: null,
+        errMsg: null,
       });
     case types.GET_ACCESS_TOKEN:
       return Object.assign({}, state, {

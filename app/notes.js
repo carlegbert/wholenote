@@ -29,7 +29,7 @@ export function getNoteRequest(store) {
     allNoteElements(store);
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      accessTokenRequest(store, [getNoteRequest], loginRequest);
+      accessTokenRequest(store, [getNoteRequest], [loginRequest]);
     }
   });
 }
@@ -56,7 +56,7 @@ export function createNoteRequest(store) {
     $(`#${res.note.id}`).addClass('selected-note-li');
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      accessTokenRequest(store, [createNoteRequest], loginRequest);
+      accessTokenRequest(store, [createNoteRequest], [loginRequest]);
     }
   });
 }
@@ -82,7 +82,7 @@ export function updateNoteRequest(store) {
     }
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      accessTokenRequest(store, [updateNoteRequest], loginRequest);
+      accessTokenRequest(store, [updateNoteRequest], [loginRequest]);
     }
   });
 }
