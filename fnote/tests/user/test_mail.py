@@ -24,7 +24,7 @@ class TestMail(object):
 
     def test_bad_verify_url_fails(self, client):
         response = client.get('verify/notarealtoken')
-        assert 'FAIL' in str(response.data)
+        assert 'email verification' in str(response.data)
         assert response.status_code == 200
 
     def test_verify_url_no_tkn_fails(self, client):

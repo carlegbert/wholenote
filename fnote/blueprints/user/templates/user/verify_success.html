@@ -1,1 +1,12 @@
-VERIFICATION SUCCESS
+{% extends 'layouts/base.html' %}
+
+{% block title %}Email verified{% endblock %}
+
+{% block body %}
+<div class="row">
+  <div class="col-xs-4 col-xs-offset-4 text-center msg-container">
+    <h3>Your email has been succesfully verified and your account can now be used.</h3>
+    <a href="{{ url_for('page.home') }}">log in</a>
+  </div>
+</div>
+{% endblock %}
