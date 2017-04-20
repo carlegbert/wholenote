@@ -7,8 +7,8 @@
   "author": "Carl Egbert <egbertcarl@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "webpack",
-    "start": "webpack-dev-server"
+    "build": "webpack --config webpack.config.prod.js",
+    "start": "webpack-dev-server --config webpack.config.dev.js"
   },
   "dependencies": {
     "jquery": "^3.2.1",
