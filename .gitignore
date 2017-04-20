@@ -3,4 +3,4 @@
 .coverage
 settings.py
 logs/
-
+build/

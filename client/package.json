@@ -1,0 +1,35 @@
+{
+  "name": "wholenote-jq",
+  "version": "1.0.0",
+  "description": "Simple jquery-based frontend for https://github.com/carlegbert/wholenote",
+  "main": "main.js",
+  "repository": "https://github.com/carlegbert/wholenote-jq",
+  "author": "Carl Egbert <egbertcarl@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build-prod": "webpack --config webpack.config.prod.js -p --define process.env.NODE_ENV='\"production\"' --progress --colors",
+    "start": "webpack-dev-server --config webpack.config.dev.js --progress --colors",
+    "start-prod": "webpack-dev-server --config webpack.config.prod.js -p --define process.env.NODE_ENV='\"production\"' --progress --colors"
+  },
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "redux": "^3.6.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.1",
+    "babel-loader": "^6.4.1",
+    "babel-preset-latest": "^6.24.1",
+    "css-loader": "^0.28.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3",
+    "html-webpack-plugin": "^2.28.0",
+    "style-loader": "^0.16.1",
+    "webpack": "^2.3.3",
+    "webpack-dev-server": "^2.4.2"
+  }
+}
