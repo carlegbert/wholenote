@@ -4,3 +4,5 @@
 settings.py
 logs/
 build/
+bundle.js
+node_modules/

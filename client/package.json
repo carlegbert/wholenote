@@ -8,8 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build-prod": "webpack --config webpack.config.prod.js -p --define process.env.NODE_ENV='\"production\"' --progress --colors",
-    "start": "webpack-dev-server --config webpack.config.dev.js --progress --colors",
-    "start-prod": "webpack-dev-server --config webpack.config.prod.js -p --define process.env.NODE_ENV='\"production\"' --progress --colors"
+    "start": "webpack-dev-server --config webpack.config.dev.js --progress --colors"
   },
   "dependencies": {
     "jquery": "^3.2.1",
