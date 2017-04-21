@@ -19,8 +19,7 @@ export function loginRequest(store) {
   const email = $('#login-email').val();
   const enc = window.btoa(`${email}:${pw}`);
   $.ajax({
-    url: 'http://localhost:9000/api/v1.0/login',
-    crossDomain: true,
+    url: '/api/v1.0/login',
     type: 'POST',
     headers: {
       Authorization: `Basic ${enc}`,
@@ -50,8 +49,7 @@ export function registerRequest(store) {
   }
   const data = JSON.stringify({ email, password });
   $.ajax({
-    url: 'http://localhost:9000/api/v1.0/register',
-    crossDomain: true,
+    url: '/api/v1.0/register',
     type: 'POST',
     contentType: 'application/json',
     data,
@@ -88,8 +86,7 @@ export function accessTokenRequest(store, successCallbacks, failCallbacks) {
   // successCallbacks and failCallbacks should both be arrays of functions.
   const rTkn = localStorage.getItem('refreshToken');
   $.ajax({
-    url: 'http://localhost:9000/api/v1.0/refresh',
-    crossDomain: true,
+    url: '/api/v1.0/refresh',
     type: 'POST',
     headers: { Authorization: `Bearer ${rTkn}` },
   }).done((res) => {

@@ -20,8 +20,7 @@ import { accessTokenRequest, loginRequest } from './auth';
 export function getNoteRequest(store) {
   const aTkn = store.getState().accessToken;
   $.ajax({
-    url: 'http://localhost:9000/api/v1.0/notes',
-    crossDomain: true,
+    url: '/api/v1.0/notes',
     type: 'GET',
     headers: { Authorization: `Bearer ${aTkn}` },
   }).done((res) => {
@@ -41,8 +40,7 @@ export function createNoteRequest(store) {
   const data = JSON.stringify({ title, text });
 
   $.ajax({
-    url: 'http://localhost:9000/api/v1.0/notes',
-    crossDomain: true,
+    url: '/api/v1.0/notes',
     type: 'POST',
     headers: { Authorization: `Bearer ${aTkn}` },
     contentType: 'application/json',
@@ -68,8 +66,7 @@ export function updateNoteRequest(store) {
   const aTkn = store.getState().accessToken;
   const id = store.getState().selectedNote.id;
   $.ajax({
-    url: `http://localhost:9000/api/v1.0/notes/${id}`,
-    crossDomain: true,
+    url: `/api/v1.0/notes/${id}`,
     type: 'PUT',
     headers: { Authorization: `Bearer ${aTkn}` },
     contentType: 'application/json',
@@ -91,8 +88,7 @@ export function deleteNoteRequest(store) {
   const id = store.getState().selectedNote.id;
   const aTkn = store.getState().accessToken;
   $.ajax({
-    url: `http://localhost:9000/api/v1.0/notes/${id}`,
-    crossDomain: true,
+    url: `/api/v1.0/notes/${id}`,
     type: 'DELETE',
     headers: { Authorization: `Bearer ${aTkn}` },
   }).done(() => {
