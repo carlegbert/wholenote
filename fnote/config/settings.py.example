@@ -3,6 +3,7 @@
 # general settings
 DEBUG = True
 TRAP_HTTP_EXCEPTIONS = True
+BASE_URL = 'http://localhost:9000' # change for deployment
 
 # secret keys
 SECRET_KEY = 'secret_key_goes_here'

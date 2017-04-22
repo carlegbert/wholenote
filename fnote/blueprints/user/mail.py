@@ -1,6 +1,7 @@
 from flask import url_for
 from flask_mail import Message
 
+from fnote.config.settings import BASE_URL
 from fnote.extensions import mail, url_sts
 
 
@@ -11,7 +12,8 @@ def send_confirmation_message(email):
     """
     msg = Message('Please verify your email address')
     sts_token = url_sts.dumps(['verify_email', email])
-    url = url_for('user.verify', tkn=sts_token)
+    endpoint = url_for('user.verify', tkn=sts_token)
+    url = BASE_URL + endpoint
     msg.html = "Click <a href={0}>here</a> or paste {0} into your browser's \
         address bar to verify your account.".format(url)
     msg.add_recipient(email)
