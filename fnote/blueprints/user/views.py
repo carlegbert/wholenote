@@ -66,7 +66,7 @@ def refresh():
     u = User.find_by_identity(email)
     jwt = u.get_access_token()
     data = {'access_token': jwt, 'message': 'Success',
-            email: email, 'statusCode': 200}
+            'email': email, 'statusCode': 200}
     return make_response(jsonify(data), 200)
 
 
