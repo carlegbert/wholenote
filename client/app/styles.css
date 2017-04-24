@@ -48,26 +48,25 @@ input {
 .note-li {
   font-size: 2em;
   border-radius: 0px;
-  border: 0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  border-top: solid #cdcdcd 2px;
-  border-bottom: solid #eee 2px;
+  border: solid #eee 2px;
   background-color: #eee;
+  margin: 0px;
+}
+
+#new-note-button {
+  font-size: 2em;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: #0c6;
+  border: solid #0c6 2px;
+}
+
+#new-note-button.selected-note-li {
+  border: solid rgb(50, 100, 255) 2px;
 }
 
 .selected-note-li {
-  color: rgba(50, 100, 255, .8);
-}
-
-#new-note {
-  background-color: rgba(0, 153, 51, .2);
-  border: 0px;
-  color: green;
-}
-
-#new-note.selected-note-li {
-  background-color: rgba(0, 153, 51, .4);
+  border: solid rgb(50, 100, 255) 2px;
 }
 
 .btn {

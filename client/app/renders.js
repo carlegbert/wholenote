@@ -127,7 +127,9 @@ export function renderAllNoteElements(store) {
   $('#main').html(`
     <div class="container">
       <div class="col-xs-3 text-center">
-        <div class="panel panel-default note-li new-note-button" id="new-note-button">+</div>
+        <div class="panel panel-default new-note-button" id="new-note-button">
+          + new note
+        </div>
         <div id="note-list"></div>
       </div>
       <div class="col-xs-9">
