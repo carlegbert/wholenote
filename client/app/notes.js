@@ -4,7 +4,6 @@ import {
   addNote,
   getNotes,
   deleteNote,
-  selectNote,
   updateNote,
 } from './actions/actions';
 
@@ -47,7 +46,6 @@ export function createNoteRequest(store) {
     data,
   }).done((res) => {
     store.dispatch(addNote(res.note));
-    store.dispatch(selectNote(res.note.id));
     renderNoteList(store);
     renderNoteDetail(store);
     $('.selected-note-li').removeClass('selected-note-li');
@@ -93,9 +91,8 @@ export function deleteNoteRequest(store) {
     headers: { Authorization: `Bearer ${aTkn}` },
   }).done(() => {
     store.dispatch(deleteNote(id));
-    store.dispatch(selectNote(null));
-    renderNoteList(store);
-    renderNewNoteForm(store);
+    $(`#${id}`).remove();
+    renderNoteDetail(store);
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
       accessTokenRequest(store, [deleteNoteRequest], loginRequest);

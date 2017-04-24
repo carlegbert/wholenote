@@ -23,7 +23,6 @@ export function renderNavbar(store) {
         </div>
       </div>
     </div>
-
   `);
 }
 
@@ -75,6 +74,9 @@ export function renderNoteList(store) {
 }
 
 export function renderNewNoteForm() {
+  $('.selected-note-li').removeClass('selected-note-li');
+  $('#new-note-button').addClass('selected-note-li');
+
   $('#note-detail').html(`
     <div class="note-detail-container">
       <div class="note-title-container">
@@ -89,6 +91,19 @@ export function renderNewNoteForm() {
 }
 
 export function renderNoteDetail(store) {
+  $('.selected-note-li').removeClass('selected-note-li');
+  if (store.getState().notes.length === 0) {
+    $('#note-detail').html(`
+      <div class="text-center new-note-exp">
+        <h3>
+          looks like you haven't created any notes yet.
+          <a class="new-note-button" href="#">click</a> to create one.
+        </h3>
+      </div>`);
+    return;
+  }
+
+  $(`#${store.getState().selectedNote.id}`).addClass('selected-note-li');
   const title = store.getState().selectedNote.title;
   const text = store.getState().selectedNote.text;
   $('#note-detail').html(`
@@ -109,7 +124,7 @@ export function renderAllNoteElements(store) {
   $('#main').html(`
     <div class="container">
       <div class="col-xs-3 text-center">
-        <div class="panel panel-default note-li" id="new-note">+</div>
+        <div class="panel panel-default note-li new-note-button" id="new-note-button">+</div>
         <div id="note-list"></div>
       </div>
       <div class="col-xs-9" id="note-detail"></div>
@@ -117,11 +132,5 @@ export function renderAllNoteElements(store) {
   `);
 
   renderNoteList(store);
-
-  if (store.getState().notes.length === 0 || !store.getState().selectedNote) {
-    renderNewNoteForm();
-    $('#new-note').addClass('selected-note-li');
-  } else {
-    renderNoteDetail(store);
-  }
+  renderNoteDetail(store);
 }

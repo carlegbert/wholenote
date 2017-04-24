@@ -67,9 +67,7 @@ $(document).ready(() => {
       registerRequest(store);
     }
 
-    if (ev.target.id === 'new-note') {
-      $('.selected-note-li').removeClass('selected-note-li');
-      $('#new-note').addClass('selected-note-li');
+    if (ev.target.classList.contains('new-note-button')) {
       renderNewNoteForm();
     }
 
@@ -79,8 +77,6 @@ $(document).ready(() => {
 
     if (ev.target.classList.contains('note-detail-link')) {
       store.dispatch(selectNote(event.target.id));
-      $('.selected-note-li').removeClass('selected-note-li');
-      $(`#${event.target.id}`).addClass('selected-note-li');
       renderNoteDetail(store);
     }
 

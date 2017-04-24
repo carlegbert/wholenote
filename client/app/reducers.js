@@ -36,10 +36,12 @@ function notesApp(state = initialState, action) {
     case types.GET_NOTES:
       return Object.assign({}, state, {
         notes: action.notes,
+        selectedNote: action.notes.length === 0 ? null : action.notes[0],
       });
     case types.ADD_NOTE:
       return Object.assign({}, state, {
         notes: [...state.notes, action.newNote],
+        selectedNote: action.newNote,
       });
     case types.SELECT_NOTE:
       return Object.assign({}, state, {
@@ -55,6 +57,8 @@ function notesApp(state = initialState, action) {
     case types.DELETE_NOTE:
       return Object.assign({}, state, {
         notes: state.notes.filter(note => note.id !== action.id),
+        selectedNote: state.notes.length === 1 ? null :
+          state.notes.filter(note => note.id !== action.id)[0],
       });
     default:
       return state;

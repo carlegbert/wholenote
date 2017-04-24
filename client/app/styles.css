@@ -31,6 +31,10 @@ input {
   width: 100%;
 }
 
+.new-note-exp {
+  padding: 20px;
+}
+
 .note-li {
   font-size: 2em;
   border-radius: 0px;
