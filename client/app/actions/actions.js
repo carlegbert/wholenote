@@ -33,6 +33,6 @@ export function saveAccessToken(userEmail, accessToken) {
   return { type: types.SAVE_ACCESS_TOKEN, userEmail, accessToken };
 }
 
-export function authFail(userEmail, errMsg) {
-  return { type: types.AUTH_FAIL, userEmail, errMsg };
+export function authFail(userEmail) {
+  return { type: types.AUTH_FAIL, userEmail };
 }

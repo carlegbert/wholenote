@@ -9,7 +9,7 @@ import {
 
 import {
   renderAllNoteElements,
-  renderNewNoteForm,
+  renderNoteActionFeedback,
   renderNoteDetail,
   renderNoteList,
 } from './renders';
@@ -48,6 +48,7 @@ export function createNoteRequest(store) {
     store.dispatch(addNote(res.note));
     renderNoteList(store);
     renderNoteDetail(store);
+    renderNoteActionFeedback(`${title} has been saved`);
     $('.selected-note-li').removeClass('selected-note-li');
     $(`#${res.note.id}`).addClass('selected-note-li');
   }).fail((err) => {
@@ -70,6 +71,7 @@ export function updateNoteRequest(store) {
     contentType: 'application/json',
     data,
   }).done((res) => {
+    renderNoteActionFeedback(`${title} has been saved`);
     const oldTitle = store.getState().selectedNote.title;
     store.dispatch(updateNote(res.note));
     if (oldTitle !== res.note.title) {
@@ -90,6 +92,7 @@ export function deleteNoteRequest(store) {
     type: 'DELETE',
     headers: { Authorization: `Bearer ${aTkn}` },
   }).done(() => {
+    renderNoteActionFeedback(`${store.getState().selectedNote.title} has been deleted`);
     store.dispatch(deleteNote(id));
     $(`#${id}`).remove();
     renderNoteDetail(store);

@@ -31,7 +31,6 @@ function notesApp(state = initialState, action) {
     case types.AUTH_FAIL:
       return Object.assign({}, state, {
         userEmail: action.userEmail,
-        errMsg: action.errMsg,
       });
     case types.GET_NOTES:
       return Object.assign({}, state, {

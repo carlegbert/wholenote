@@ -33,8 +33,8 @@ export function loginRequest(store) {
     getNoteRequest(store);
   }).fail((err) => {
     const errMsg = err.responseJSON.error || err.responseJSON.msg;
-    store.dispatch(authFail(email, errMsg));
-    renderLoginForm(store);
+    store.dispatch(authFail(email));
+    renderLoginForm(store, errMsg);
   });
 }
 
@@ -43,8 +43,8 @@ export function registerRequest(store) {
   const password = $('#reg-pw').val();
   const confirm = $('#reg-confirm').val();
   if (password !== confirm) {
-    store.dispatch(authFail(email, "Passwords don't match"));
-    renderRegisterForm(store);
+    store.dispatch(authFail(email));
+    renderRegisterForm(store, "Passwords don't match");
     return;
   }
   const data = JSON.stringify({ email, password });
@@ -62,8 +62,8 @@ export function registerRequest(store) {
     `);
   }).fail((err) => {
     const errMsg = err.responseJSON.error || err.responseJSON.msg;
-    store.dispatch(authFail(email, errMsg));
-    renderRegisterForm(store);
+    store.dispatch(authFail(email));
+    renderRegisterForm(store, errMsg);
   });
 }
 

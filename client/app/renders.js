@@ -26,9 +26,8 @@ export function renderNavbar(store) {
   `);
 }
 
-export function renderLoginForm(store) {
+export function renderLoginForm(store, errMsg = '') {
   const email = store.getState().userEmail || '';
-  const errMsg = store.getState().errMsg || '';
   $('#main').html(`
     <div class="col-sm-6 col-sm-offset-3 text-center">
       <div class="err-msg"><h3>${errMsg}</h3><div>
@@ -43,9 +42,8 @@ export function renderLoginForm(store) {
   $('#log-or-reg').html('<a href="#" id="register">register</a>');
 }
 
-export function renderRegisterForm(store) {
+export function renderRegisterForm(store, errMsg = '') {
   const email = store.getState().userEmail || '';
-  const errMsg = store.getState().errMsg || '';
   $('#main').html(`
     <div class="col-sm-6 col-sm-offset-3 text-center">
       <div class="err-msg"><h3>${errMsg}</h3><div>
@@ -120,6 +118,11 @@ export function renderNoteDetail(store) {
   `);
 }
 
+export function renderNoteActionFeedback(notification = '') {
+  $('#note-feedback-container').html(`<div id="note-feedback">${notification}</div>`);
+  setTimeout(() => $('#note-feedback').fadeOut(), 8000);
+}
+
 export function renderAllNoteElements(store) {
   $('#main').html(`
     <div class="container">
@@ -127,7 +130,10 @@ export function renderAllNoteElements(store) {
         <div class="panel panel-default note-li new-note-button" id="new-note-button">+</div>
         <div id="note-list"></div>
       </div>
-      <div class="col-xs-9" id="note-detail"></div>
+      <div class="col-xs-9">
+        <div id="note-feedback-container" class="text-center"></div>
+        <div id="note-detail"></div>
+      </div>
     </div>
   `);
 

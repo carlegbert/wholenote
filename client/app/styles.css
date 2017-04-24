@@ -35,6 +35,16 @@ input {
   padding: 20px;
 }
 
+#note-feedback-container {
+  height: 20px;
+  font-size: 20px;
+  width: 100%;
+}
+
+#note-feedback {
+  color: rgba(0, 175, 75, .6);
+}
+
 .note-li {
   font-size: 2em;
   border-radius: 0px;
