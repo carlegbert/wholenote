@@ -4,7 +4,6 @@ import { createStore } from 'redux';
 import notesApp from './reducers';
 
 import { selectNote } from './actions/actions';
-
 import {
   renderNavbar,
   renderNewNoteForm,
@@ -31,10 +30,10 @@ $(document).ready(() => {
   const store = createStore(notesApp);
 
   if (localStorage.getItem('refreshToken')) {
-    accessTokenRequest(store, [getNoteRequest, renderNavbar], [renderLoginForm, renderNavbar]);
+    accessTokenRequest(store, [getNoteRequest, renderNavbar], [renderRegisterForm, renderNavbar]);
   } else {
     renderNavbar(store);
-    renderLoginForm(store);
+    renderRegisterForm(store);
   }
 
   document.addEventListener('click', (ev) => {
@@ -45,11 +44,11 @@ $(document).ready(() => {
       $('#back-link').toggle();
     }
 
-    if (ev.target.id === 'register') {
+    if (ev.target.classList.contains('register')) {
       renderRegisterForm(store);
     }
 
-    if (ev.target.id === 'login') {
+    if (ev.target.classList.contains('login')) {
       renderLoginForm(store);
     }
 

@@ -36,10 +36,12 @@ export function renderLoginForm(store, errMsg = '') {
         <input placeholder="password" id="login-pw" type="password" >
         <button class="auth-btn btn btn-success" id="login-submit">Log in</button>
       </form>
+      <br />
+      <h4><a href="#" class="register">register for an account</a></h4>
     </div>
   `);
 
-  $('#log-or-reg').html('<a href="#" id="register">register</a>');
+  $('#log-or-reg').html('<a href="#" class="register">register</a>');
 }
 
 export function renderRegisterForm(store, errMsg = '') {
@@ -53,10 +55,12 @@ export function renderRegisterForm(store, errMsg = '') {
         <input placeholder="confirm password" id="reg-confirm" type="password" >
         <button class="auth-btn btn btn-success" id="reg-submit">Register</button>
       </form>
+      <br />
+      <h4><a href="#" class="login">I'm already registered</a></h4>
     </div>
   `);
 
-  $('#log-or-reg').html('<a href="#" id="login">login</a>');
+  $('#log-or-reg').html('<a href="#" class="login">login</a>');
 }
 
 export function renderNoteList(store) {
