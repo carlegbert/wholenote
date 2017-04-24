@@ -6,12 +6,11 @@ import notesApp from './reducers';
 import { selectNote } from './actions/actions';
 
 import {
-  about,
-  navbar,
-  newNoteForm,
-  noteDetail,
-  loginForm,
-  registerForm,
+  renderNavbar,
+  renderNewNoteForm,
+  renderNoteDetail,
+  renderLoginForm,
+  renderRegisterForm,
 } from './renders';
 import {
   loginRequest,
@@ -32,10 +31,10 @@ $(document).ready(() => {
   const store = createStore(notesApp);
 
   if (localStorage.getItem('refreshToken')) {
-    accessTokenRequest(store, [getNoteRequest, navbar], [loginForm, navbar]);
+    accessTokenRequest(store, [getNoteRequest, renderNavbar], [renderLoginForm, renderNavbar]);
   } else {
-    navbar(store);
-    loginForm(store);
+    renderNavbar(store);
+    renderLoginForm(store);
   }
 
   document.addEventListener('click', (ev) => {
@@ -47,11 +46,11 @@ $(document).ready(() => {
     }
 
     if (ev.target.id === 'register') {
-      registerForm(store);
+      renderRegisterForm(store);
     }
 
     if (ev.target.id === 'login') {
-      loginForm(store);
+      renderLoginForm(store);
     }
 
     if (ev.target.id === 'logout') {
@@ -70,8 +69,8 @@ $(document).ready(() => {
 
     if (ev.target.id === 'new-note') {
       $('.selected-note-li').removeClass('selected-note-li');
-      $(`#new-note`).addClass('selected-note-li');
-      newNoteForm();
+      $('#new-note').addClass('selected-note-li');
+      renderNewNoteForm();
     }
 
     if (ev.target.id === 'new-note-submit') {
@@ -82,7 +81,7 @@ $(document).ready(() => {
       store.dispatch(selectNote(event.target.id));
       $('.selected-note-li').removeClass('selected-note-li');
       $(`#${event.target.id}`).addClass('selected-note-li');
-      noteDetail(store);
+      renderNoteDetail(store);
     }
 
     if (ev.target.id === 'update-note-submit') {

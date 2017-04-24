@@ -7,5 +7,5 @@ export const SELECT_NOTE = 'SELECT_NOTE';
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
-export const GET_ACCESS_TOKEN = 'GET_ACCESS_TOKEN';
+export const SAVE_ACCESS_TOKEN = 'SAVE_ACCESS_TOKEN';
 export const AUTH_FAIL = 'AUTH_FAIL';

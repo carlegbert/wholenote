@@ -1,6 +1,6 @@
 /* eslint-env browser, jquery */
 
-export function navbar(store) {
+export function renderNavbar(store) {
   const email = store.getState().userEmail;
   let navContent;
   if (!email) {
@@ -27,7 +27,7 @@ export function navbar(store) {
   `);
 }
 
-export function loginForm(store) {
+export function renderLoginForm(store) {
   const email = store.getState().userEmail || '';
   const errMsg = store.getState().errMsg || '';
   $('#main').html(`
@@ -44,7 +44,7 @@ export function loginForm(store) {
   $('#log-or-reg').html('<a href="#" id="register">register</a>');
 }
 
-export function registerForm(store) {
+export function renderRegisterForm(store) {
   const email = store.getState().userEmail || '';
   const errMsg = store.getState().errMsg || '';
   $('#main').html(`
@@ -62,7 +62,7 @@ export function registerForm(store) {
   $('#log-or-reg').html('<a href="#" id="login">login</a>');
 }
 
-export function noteList(store) {
+export function renderNoteList(store) {
   const notes = store.getState().notes;
   $('#note-list').html('');
   notes.forEach((note) => {
@@ -74,7 +74,7 @@ export function noteList(store) {
   });
 }
 
-export function newNoteForm() {
+export function renderNewNoteForm() {
   $('#note-detail').html(`
     <div class="note-detail-container">
       <div class="note-title-container">
@@ -88,7 +88,7 @@ export function newNoteForm() {
   `);
 }
 
-export function noteDetail(store) {
+export function renderNoteDetail(store) {
   const title = store.getState().selectedNote.title;
   const text = store.getState().selectedNote.text;
   $('#note-detail').html(`
@@ -105,7 +105,7 @@ export function noteDetail(store) {
   `);
 }
 
-export function allNoteElements(store) {
+export function renderAllNoteElements(store) {
   $('#main').html(`
     <div class="container">
       <div class="col-xs-3 text-center">
@@ -116,12 +116,12 @@ export function allNoteElements(store) {
     </div>
   `);
 
-  noteList(store);
+  renderNoteList(store);
 
   if (store.getState().notes.length === 0 || !store.getState().selectedNote) {
-    newNoteForm();
+    renderNewNoteForm();
     $('#new-note').addClass('selected-note-li');
   } else {
-    noteDetail(store);
+    renderNoteDetail(store);
   }
 }

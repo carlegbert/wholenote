@@ -3,14 +3,14 @@
 import {
   login,
   logout,
-  getAccessToken,
+  saveAccessToken,
   authFail,
 } from './actions/actions';
 
 import {
-  loginForm,
-  navbar,
-  registerForm,
+  renderLoginForm,
+  renderNavbar,
+  renderRegisterForm,
 } from './renders';
 import { getNoteRequest } from './notes';
 
@@ -29,12 +29,12 @@ export function loginRequest(store) {
     store.dispatch(login(email, res.access_token));
     localStorage.setItem('currentUser', email);
     sessionStorage.setItem('accessToken', res.access_token);
-    navbar(store);
+    renderNavbar(store);
     getNoteRequest(store);
   }).fail((err) => {
     const errMsg = err.responseJSON.error || err.responseJSON.msg;
     store.dispatch(authFail(email, errMsg));
-    loginForm(store);
+    renderLoginForm(store);
   });
 }
 
@@ -44,7 +44,7 @@ export function registerRequest(store) {
   const confirm = $('#reg-confirm').val();
   if (password !== confirm) {
     store.dispatch(authFail(email, "Passwords don't match"));
-    registerForm(store);
+    renderRegisterForm(store);
     return;
   }
   const data = JSON.stringify({ email, password });
@@ -63,7 +63,7 @@ export function registerRequest(store) {
   }).fail((err) => {
     const errMsg = err.responseJSON.error || err.responseJSON.msg;
     store.dispatch(authFail(email, errMsg));
-    registerForm(store);
+    renderRegisterForm(store);
   });
 }
 
@@ -72,8 +72,8 @@ export function logoutRequest(store) {
   localStorage.setItem('refreshToken', '');
   sessionStorage.setItem('accessToken', '');
   localStorage.setItem('currentUser', '');
-  navbar(store);
-  loginForm(store);
+  renderNavbar(store);
+  renderLoginForm(store);
 }
 
 export function accessTokenRequest(store, successCallbacks, failCallbacks) {
@@ -90,12 +90,12 @@ export function accessTokenRequest(store, successCallbacks, failCallbacks) {
     type: 'POST',
     headers: { Authorization: `Bearer ${rTkn}` },
   }).done((res) => {
-    store.dispatch(getAccessToken(res.email, res.access_token));
+    store.dispatch(saveAccessToken(res.email, res.access_token));
     successCallbacks.forEach(callback => callback(store));
     sessionStorage.setItem('accessToken', res.access_token);
   }).fail(() => {
     failCallbacks.forEach(callback => callback(store));
     sessionStorage.setItem('accessToken', ''); // clear old access token on failure
-    store.dispatch(getAccessToken(res.email, null));
+    store.dispatch(saveAccessToken(null, null));
   });
 }

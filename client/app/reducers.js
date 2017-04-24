@@ -23,7 +23,7 @@ function notesApp(state = initialState, action) {
         selectedNote: null,
         errMsg: null,
       });
-    case types.GET_ACCESS_TOKEN:
+    case types.SAVE_ACCESS_TOKEN:
       return Object.assign({}, state, {
         accessToken: action.accessToken,
         userEmail: action.userEmail,

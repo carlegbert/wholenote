@@ -29,8 +29,8 @@ export function logout() {
   return { type: types.LOGOUT };
 }
 
-export function getAccessToken(userEmail, accessToken) {
-  return { type: types.GET_ACCESS_TOKEN, userEmail, accessToken };
+export function saveAccessToken(userEmail, accessToken) {
+  return { type: types.SAVE_ACCESS_TOKEN, userEmail, accessToken };
 }
 
 export function authFail(userEmail, errMsg) {

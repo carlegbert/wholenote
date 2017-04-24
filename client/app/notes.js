@@ -9,10 +9,10 @@ import {
 } from './actions/actions';
 
 import {
-  allNoteElements,
-  newNoteForm,
-  noteDetail,
-  noteList,
+  renderAllNoteElements,
+  renderNewNoteForm,
+  renderNoteDetail,
+  renderNoteList,
 } from './renders';
 
 import { accessTokenRequest, loginRequest } from './auth';
@@ -25,7 +25,7 @@ export function getNoteRequest(store) {
     headers: { Authorization: `Bearer ${aTkn}` },
   }).done((res) => {
     store.dispatch(getNotes(res.notes));
-    allNoteElements(store);
+    renderAllNoteElements(store);
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
       accessTokenRequest(store, [getNoteRequest], [loginRequest]);
@@ -48,8 +48,8 @@ export function createNoteRequest(store) {
   }).done((res) => {
     store.dispatch(addNote(res.note));
     store.dispatch(selectNote(res.note.id));
-    noteList(store);
-    noteDetail(store);
+    renderNoteList(store);
+    renderNoteDetail(store);
     $('.selected-note-li').removeClass('selected-note-li');
     $(`#${res.note.id}`).addClass('selected-note-li');
   }).fail((err) => {
@@ -94,8 +94,8 @@ export function deleteNoteRequest(store) {
   }).done(() => {
     store.dispatch(deleteNote(id));
     store.dispatch(selectNote(null));
-    noteList(store);
-    newNoteForm(store);
+    renderNoteList(store);
+    renderNewNoteForm(store);
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
       accessTokenRequest(store, [deleteNoteRequest], loginRequest);
