@@ -30,7 +30,7 @@ $(document).ready(() => {
   const store = createStore(notesApp);
 
   if (localStorage.getItem('refreshToken')) {
-    accessTokenRequest(store, [getNoteRequest, renderNavbar], [renderRegisterForm, renderNavbar]);
+    accessTokenRequest(store, [renderNavbar, getNoteRequest], [renderNavbar, renderLoginForm]);
   } else {
     renderNavbar(store);
     renderRegisterForm(store);

@@ -64,6 +64,9 @@ def refresh():
     """
     email = get_jwt_identity()
     u = User.find_by_identity(email)
+    if not u.verified_email:
+        data = {'error': 'Unverified email address', 'statusCode': 403}
+        return make_response(jsonify(data), 403)
     jwt = u.get_access_token()
     data = {'access_token': jwt, 'message': 'Success',
             'email': email, 'statusCode': 200}
@@ -73,7 +76,7 @@ def refresh():
 @user.route('/api/v1.0/register', methods=['POST'])
 def register():
     """Accepts JSON registration request and inserts user into database.
-    :returns: JSON with status code, message, refresh token, fresh access token
+    :returns: JSON with status code, message, refresh token
     """
     try:
         email = request.json['email']
@@ -90,14 +93,12 @@ def register():
             return make_response(jsonify(data), 400)
 
         u = User.register(email=email, password=password)
-        access_token = u.get_access_token(True)
         refresh_token = u.get_refresh_token()
 
         message = 'Account registered for {0}.'.format(u.email)
         send_confirmation_message(u.email)
         # frontend client should remind user to verify their email
-        res = {'statusCode': 200, 'message': message,
-               'access_token': access_token, 'refresh_token': refresh_token}
+        res = {'statusCode': 200, 'message': message, 'refresh_token': refresh_token}
         return make_response(jsonify(res), 200)
 
     except UserExistsError:

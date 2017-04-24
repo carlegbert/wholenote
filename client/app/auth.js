@@ -27,7 +27,6 @@ export function loginRequest(store) {
   }).done((res) => {
     localStorage.setItem('refreshToken', res.refresh_token);
     store.dispatch(login(email, res.access_token));
-    localStorage.setItem('currentUser', email);
     sessionStorage.setItem('accessToken', res.access_token);
     renderNavbar(store);
     getNoteRequest(store);
@@ -53,13 +52,14 @@ export function registerRequest(store) {
     type: 'POST',
     contentType: 'application/json',
     data,
-  }).done(() => {
+  }).done((res) => {
     $('#main').html(`
       <div class="col-xs-6 col-xs-offset-3 reg-success text-center">
         <h3>Registration for ${email} successful.
         Please check your email to verify your account.</h3>
       </div>
     `);
+    localStorage.setItem('refreshToken', res.refresh_token);
   }).fail((err) => {
     const errMsg = err.responseJSON.error || err.responseJSON.msg;
     store.dispatch(authFail(email));

@@ -51,7 +51,7 @@ Example response JSON:
 
 #### Accepts:
 
-A POST request with data passed as JSON. A register request does return access tokens, but users are required to verify their email address before using their account.
+A POST request with data passed as JSON.
 
 Example AJAX request:
 ```
@@ -72,7 +72,10 @@ $.ajax({
 
 #### Returns:
 
-A JSON response including a message, an access token, and a refresh token.
+A JSON response including a message and a refresh token. This allows the front-end client to cache the refresh
+token so that the user doesn't need to log in once they have verified their email, but prevents them from
+creating any protected data until they do; the only ways to get access tokens are through login or refresh requests,
+which both require a verified email.
 
 Example response JSON:
 ```
