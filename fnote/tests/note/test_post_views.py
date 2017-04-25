@@ -46,3 +46,15 @@ class TestPostNoteViews(object):
         data = {'title': 'new_note', 'text': 'new_text'}
         response = post_json(client, URL, data, auth)
         assert response.status_code == 422
+
+    def test_post_long_title_shortens(self, client, unfresh_token):
+        # title longer than 255 chars should shorten to 255
+        auth = {'Authorization': 'Bearer ' + unfresh_token}
+        long_title = 'abcdefghijklmnopqrstuvwxyz' * 10
+        expected_title = long_title[:255]
+        data = {'title': long_title, 'text': 'new_text'}
+        response = post_json(client, URL, data, auth)
+        response_data = get_json(response)
+        assert response.status_code == 201
+        assert response_data['message'] == 'Note created'
+        assert response_data['note']['title'] == expected_title

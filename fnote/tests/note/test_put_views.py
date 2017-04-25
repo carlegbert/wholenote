@@ -82,3 +82,16 @@ class TestPutNoteViews(object):
         response_data = get_json(response)
         assert response.status_code == 400
         assert 'Missing JSON data' in response_data['error']
+
+    def test_put_long_title_shortens(self, client, user, unfresh_token):
+        # title longer than 255 chars should shorten to 255
+        note = Note(user.id, 'title', 'text').save()
+        auth = {'Authorization': 'Bearer ' + unfresh_token}
+        long_title = 'abcdefghijklmnopqrstuvwxyz' * 10
+        expected_title = long_title[:255]
+        url = '{0}/{1}'.format(URL, hashids.encode(note.id))
+        data = {'title': long_title, 'text': 'new_text'}
+        response = put_json(client, url, data, auth)
+        response_data = get_json(response)
+        assert response.status_code == 200
+        assert response_data['note']['title'] == expected_title

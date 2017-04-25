@@ -33,6 +33,7 @@ def note_no_id():
     elif request.method == 'POST':
         try:
             title = request.json['title']
+            if len(title) > 255 : title = title[:255]
             text = request.json['text']
             n = Note(u.id, title, text).save()
             note_data = n.to_dict()
@@ -82,6 +83,7 @@ def note_by_id(hash_id):
             return make_response(jsonify(data), 400)
         new_text = new_data.get('text', '')
         new_title = new_data.get('title', '')
+        if len(new_title) > 255 : new_title = new_title[:255]
         if not new_text and not new_title:
             data = {'error': "Missing parameters in JSON data.\n\
                     Valid parameters: 'title', 'text'", 'statusCode': 400}
