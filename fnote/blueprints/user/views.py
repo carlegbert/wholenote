@@ -91,6 +91,14 @@ def register():
             data = {'error': 'Password must be at least 10 characters',
                     'statusCode': 400}
             return make_response(jsonify(data), 400)
+        elif len(password) > 128:
+            data = {'error': 'Max password length is 128 characters',
+                    'statusCode': 400}
+            return make_response(jsonify(data), 400)
+        elif len(email) > 255:
+            data = {'error': 'Max email length is 255 characters',
+                    'statusCode': 400}
+            return make_response(jsonify(data), 400)
 
         u = User.register(email=email, password=password)
         refresh_token = u.get_refresh_token()

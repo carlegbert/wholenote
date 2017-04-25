@@ -55,3 +55,19 @@ class TestRegisterViews(object):
         response_data = get_json(response)
         assert 'Password must be at least' in response_data['error']
         assert response.status_code == 400
+
+    def test_long_email_sends_error(self, client):
+        long_email = 'a' * 246 + '@gmail.com'
+        post_data = {'email': long_email, 'password': 'hunter2password'}
+        response = post_json(client, URL, post_data)
+        response_data = get_json(response)
+        assert 'Max email length is 255 characters' in response_data['error']
+        assert response.status_code == 400
+
+    def test_long_password_sends_error(self, client):
+        long_password = 'a' * 129
+        post_data = {'email': 'testuser3@localhost', 'password': long_password}
+        response = post_json(client, URL, post_data)
+        response_data = get_json(response)
+        assert 'Max password length is 128 characters' in response_data['error']
+        assert response.status_code == 400
