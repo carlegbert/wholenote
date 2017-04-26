@@ -52,6 +52,7 @@ $(document).ready(() => {
     }
 
     if (ev.target.id === 'logout') {
+      updateNoteRequest(store);
       logoutRequest(store);
     }
 
@@ -66,10 +67,12 @@ $(document).ready(() => {
     }
 
     if (ev.target.classList.contains('new-note-button')) {
+      if (store.getState().notes.length > 0) updateNoteRequest(store);
       createNoteRequest(store);
     }
 
     if (ev.target.classList.contains('note-detail-link')) {
+      updateNoteRequest(store);
       store.dispatch(selectNote(event.target.id));
       renderNoteDetail(store);
     }

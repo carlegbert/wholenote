@@ -62,6 +62,10 @@ export function createNoteRequest(store) {
 export function updateNoteRequest(store) {
   const title = $('#update-title').val() || 'untitled note';
   const text = $('#update-text').val();
+  const oldTitle = store.getState().selectedNote.title;
+  const oldText = store.getState().selectedNote.text;
+  if ((oldTitle === title) && oldText === text) return;
+
   const data = JSON.stringify({ title, text });
   const aTkn = store.getState().accessToken;
   const id = store.getState().selectedNote.id;
@@ -73,7 +77,6 @@ export function updateNoteRequest(store) {
     data,
   }).done((res) => {
     renderNoteActionFeedback(`${title} has been saved`);
-    const oldTitle = store.getState().selectedNote.title;
     store.dispatch(updateNote(res.note));
     if (oldTitle !== res.note.title) {
       $(`#${id}`).html(res.note.title);
