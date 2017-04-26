@@ -11,7 +11,7 @@ class TestRegisterViews(object):
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
         msg = 'Account registered for {0}'.format('newuser@localhost.')
-        assert response_data['message'] == msg
+        assert msg in response_data['message']
         assert response_data['refresh_token']
         assert response.status_code == 200
 

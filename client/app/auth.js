@@ -53,12 +53,22 @@ export function registerRequest(store) {
     contentType: 'application/json',
     data,
   }).done((res) => {
-    $('#main').html(`
-      <div class="col-xs-6 col-xs-offset-3 reg-success text-center">
-        <h3>Registration for ${email} successful.
-        Please check your email to verify your account.</h3>
-      </div>
-    `);
+    if (res.message.includes('verified')) {
+      $('#main').html(`
+        <div class="col-xs-6 col-xs-offset-3 reg-success text-center">
+          <h3>Registration for ${email} successful.
+          Please check your email to verify your account.</h3>
+        </div>
+      `);
+    } else {
+      // In case of an error in sending mail, the server will
+      // automatically verify the user's email and send an access token.
+      localStorage.setItem('refreshToken', res.refresh_token);
+      store.dispatch(login(email, res.access_token));
+      sessionStorage.setItem('accessToken', res.access_token);
+      renderNavbar(store);
+      getNoteRequest(store);
+    }
     localStorage.setItem('refreshToken', res.refresh_token);
   }).fail((err) => {
     const errMsg = err.responseJSON.error || err.responseJSON.msg;

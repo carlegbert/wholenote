@@ -103,10 +103,25 @@ def register():
         u = User.register(email=email, password=password)
         refresh_token = u.get_refresh_token()
 
-        message = 'Account registered for {0}.'.format(u.email)
-        send_confirmation_message(u.email)
-        # frontend client should remind user to verify their email
-        res = {'statusCode': 200, 'message': message, 'refresh_token': refresh_token}
+        try:
+            send_confirmation_message(u.email)
+            message = 'Account registered for {0}. Email must be \
+                verified before the account can be used.'.format(u.email)
+            # frontend client should remind user to verify their email
+            res = {'statusCode': 200, 'message': message, 'refresh_token': refresh_token}
+        except SMPTException:
+            # At present, the hosted application uses a free gmail
+            # account. To avoid a user being prevented from verifying
+            # their account due to gmail-related failings, the account
+            # will be auto-verified in case of an exception thrown by
+            # the mail client. This is a temporary fix until I get a
+            # better mail situation set up.
+            message = 'Account registered for {0}'.format(u.email)
+            u.verified_email();
+            a_tkn = u.get_access_token();
+            r_tkn = u.get_refresh_token();
+            res = {'statusCode': 200, 'message': message,
+                    'access_token': a_tkn, 'refresh_token': r_tkn}
         return make_response(jsonify(res), 200)
 
     except UserExistsError:
