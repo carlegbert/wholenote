@@ -67,7 +67,7 @@ $(document).ready(() => {
     }
 
     if (ev.target.classList.contains('new-note-button')) {
-      if (store.getState().notes.length > 0) updateNoteRequest(store);
+      updateNoteRequest(store);
       createNoteRequest(store);
     }
 

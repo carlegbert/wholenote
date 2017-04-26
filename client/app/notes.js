@@ -61,15 +61,17 @@ export function createNoteRequest(store) {
 }
 
 export function updateNoteRequest(store) {
+  const selectedNote = store.getState().selectedNote;
+  if (!selectedNote) return;
   const title = $('#update-title').val() || 'untitled note';
   const text = $('#update-text').val();
-  const oldTitle = store.getState().selectedNote.title;
-  const oldText = store.getState().selectedNote.text;
+  const oldTitle = selectedNote.title;
+  const oldText = selectedNote.text;
   if ((oldTitle === title) && oldText === text) return;
 
   const data = JSON.stringify({ title, text });
   const aTkn = store.getState().accessToken;
-  const id = store.getState().selectedNote.id;
+  const id = selectedNote.id;
   $.ajax({
     url: `/api/v1.0/notes/${id}`,
     type: 'PUT',
