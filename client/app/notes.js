@@ -48,8 +48,9 @@ export function createNoteRequest(store) {
     store.dispatch(addNote(res.note));
     renderNoteList(store);
     renderNoteDetail(store);
-    $('#update-title').val('');
-    $('#update-title').focus();
+    const titleElement = $('#update-title')[0];
+    titleElement.focus();
+    titleElement.setSelectionRange(0, 8);
     $('.selected-note-li').removeClass('selected-note-li');
     $(`#${res.note.id}`).addClass('selected-note-li');
   }).fail((err) => {

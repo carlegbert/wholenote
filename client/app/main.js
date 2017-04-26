@@ -75,6 +75,10 @@ $(document).ready(() => {
       updateNoteRequest(store);
       store.dispatch(selectNote(event.target.id));
       renderNoteDetail(store);
+      const element = $('#update-text')[0];
+      const len = store.getState().selectedNote.title.length;
+      element.focus();
+      element.setSelectionRange(len, len);
     }
 
     if (ev.target.id === 'update-note-submit') {
