@@ -14,7 +14,7 @@ import {
   renderNoteList,
 } from './renders';
 
-import { accessTokenRequest, loginRequest } from './auth';
+import { accessTokenRequest } from './auth';
 
 export function getNoteRequest(store) {
   const aTkn = store.getState().accessToken;
@@ -27,15 +27,15 @@ export function getNoteRequest(store) {
     renderAllNoteElements(store);
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      accessTokenRequest(store, [getNoteRequest], [loginRequest]);
+      accessTokenRequest(store, [getNoteRequest]);
     }
   });
 }
 
 export function createNoteRequest(store) {
   const aTkn = store.getState().accessToken;
-  const title = $('#new-title').val() || 'new note';
-  const text = $('#new-text').val();
+  const title = 'new note';
+  const text = '';
   const data = JSON.stringify({ title, text });
 
   $.ajax({
@@ -48,12 +48,13 @@ export function createNoteRequest(store) {
     store.dispatch(addNote(res.note));
     renderNoteList(store);
     renderNoteDetail(store);
-    renderNoteActionFeedback(`${title} has been saved`);
+    $('#update-title').val('');
+    $('#update-title').focus();
     $('.selected-note-li').removeClass('selected-note-li');
     $(`#${res.note.id}`).addClass('selected-note-li');
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      accessTokenRequest(store, [createNoteRequest], [loginRequest]);
+      accessTokenRequest(store, [createNoteRequest]);
     }
   });
 }
@@ -79,7 +80,7 @@ export function updateNoteRequest(store) {
     }
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      accessTokenRequest(store, [updateNoteRequest], [loginRequest]);
+      accessTokenRequest(store, [updateNoteRequest]);
     }
   });
 }
@@ -98,7 +99,7 @@ export function deleteNoteRequest(store) {
     renderNoteDetail(store);
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
-      accessTokenRequest(store, [deleteNoteRequest], loginRequest);
+      accessTokenRequest(store, [deleteNoteRequest]);
     }
   });
 }

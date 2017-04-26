@@ -76,7 +76,7 @@ export function logoutRequest(store) {
   renderLoginForm(store);
 }
 
-export function accessTokenRequest(store, successCallbacks, failCallbacks) {
+export function accessTokenRequest(store, successCallbacks = [], failCallbacks = []) {
   // Use refresh token to retrieve access token from server.
   // Because refresh requests can be sent during different circumstances
   // (on page load or after a token expiring), different render actions
@@ -95,7 +95,8 @@ export function accessTokenRequest(store, successCallbacks, failCallbacks) {
     sessionStorage.setItem('accessToken', res.access_token);
   }).fail(() => {
     failCallbacks.forEach(callback => callback(store));
-    sessionStorage.setItem('accessToken', ''); // clear old access token on failure
+    // clear old access token on failure
+    sessionStorage.setItem('accessToken', '');
     store.dispatch(saveAccessToken(null, null));
   });
 }

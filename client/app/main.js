@@ -6,7 +6,6 @@ import notesApp from './reducers';
 import { selectNote } from './actions/actions';
 import {
   renderNavbar,
-  renderNewNoteForm,
   renderNoteDetail,
   renderLoginForm,
   renderRegisterForm,
@@ -67,10 +66,6 @@ $(document).ready(() => {
     }
 
     if (ev.target.classList.contains('new-note-button')) {
-      renderNewNoteForm();
-    }
-
-    if (ev.target.id === 'new-note-submit') {
       createNoteRequest(store);
     }
 

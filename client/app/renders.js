@@ -75,23 +75,6 @@ export function renderNoteList(store) {
   });
 }
 
-export function renderNewNoteForm() {
-  $('.selected-note-li').removeClass('selected-note-li');
-  $('#new-note-button').addClass('selected-note-li');
-
-  $('#note-detail').html(`
-    <div class="note-detail-container">
-      <div class="note-title-container">
-        <textarea id="new-title" placeholder="new note" />
-      </div>
-      <textarea id="new-text" placeholder="text" />
-      <div class="button-container text-center">
-        <button id="new-note-submit" class="btn btn-success">save</button>
-      </div>
-    </div>
-  `);
-}
-
 export function renderNoteDetail(store) {
   $('.selected-note-li').removeClass('selected-note-li');
   if (store.getState().notes.length === 0) {
