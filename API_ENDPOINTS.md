@@ -1,5 +1,7 @@
 # API endpoints
 
+Base URL: `https://wholenoteapp.com`
+
 ## Errors
 
 All endpoints return JSON including descriptive error messages and appropriate status codes, usually formatted like so:
