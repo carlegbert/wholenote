@@ -76,7 +76,7 @@ $(document).ready(() => {
       store.dispatch(selectNote(event.target.id));
       renderNoteDetail(store);
       const element = $('#update-text')[0];
-      const len = store.getState().selectedNote.title.length;
+      const len = store.getState().selectedNote.text.length;
       element.focus();
       element.setSelectionRange(len, len);
     }
