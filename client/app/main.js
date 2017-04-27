@@ -36,7 +36,7 @@ $(document).ready(() => {
   }
 
   document.addEventListener('click', (ev) => {
-    if (ev.target.id === 'about' || event.target.id === 'close-about') {
+    if (ev.target.id === 'about' || ev.target.id === 'close-about') {
       $('#about-page').toggle();
       $('#main').toggle();
       $('#about-link').toggle();
@@ -73,7 +73,7 @@ $(document).ready(() => {
 
     if (ev.target.classList.contains('note-detail-link')) {
       updateNoteRequest(store);
-      store.dispatch(selectNote(event.target.id));
+      store.dispatch(selectNote(ev.target.id));
       renderNoteDetail(store);
       const element = $('#update-text')[0];
       const len = store.getState().selectedNote.text.length;
