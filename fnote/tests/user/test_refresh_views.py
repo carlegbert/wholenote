@@ -1,4 +1,5 @@
 from fnote.tests.json_helpers import get_json
+from fnote.blueprints.user.models import User
 
 
 URL = '/api/v1.0/refresh'
@@ -49,3 +50,13 @@ class TestRefreshViews(object):
         response_two = client.post(URL, headers=refresh_header)
         assert response_one.status_code == 200
         assert response_two.status_code == 200
+
+    def test_get_access_unverified(self, client, session):
+        unver_user = User.register(email='unver@email',
+                                   password='hunter2password')
+        rtkn = unver_user.get_refresh_token()
+        headers = {'Authorization': 'Bearer {0}'.format(rtkn)}
+        response = client.post(URL, headers=headers)
+        response_data = get_json(response)
+        assert response.status_code == 403
+        assert response_data['error'] == 'Unverified email address'
