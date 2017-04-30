@@ -3,10 +3,8 @@ from flask import (
         Blueprint,
         jsonify,
         make_response,
-        redirect,
         render_template,
         request,
-        url_for,
         )
 
 from validate_email import validate_email
