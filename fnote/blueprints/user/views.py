@@ -1,3 +1,4 @@
+from smtplib import SMTPException
 from flask import (
         abort,
         Blueprint,
@@ -34,19 +35,18 @@ def login():
     u = User.find_by_identity(email)
 
     if not u or not u.check_password(password):
-        data = {'error': 'Login failed (incorrect email or password)',
-                'statusCode': 403}
+        data = {'error': 'Login failed (incorrect email or password)'}
         return make_response(jsonify(data), 403)
     elif not u.verified_email:
         # Front-end client should provide link to resend verification email
-        data = {'error': 'Unverified email address', 'statusCode': 403}
+        data = {'error': 'Unverified email address'}
         return make_response(jsonify(data), 403)
 
     access_token = u.get_access_token(True)
     refresh_token = u.get_refresh_token()
     msg = 'Login for {0} successful'.format(email)
     data = {'message': msg, 'access_token': access_token,
-            'refresh_token': refresh_token, 'statusCode': 200}
+            'refresh_token': refresh_token}
     return make_response(jsonify(data), 200)
 
 
@@ -63,11 +63,10 @@ def refresh():
     email = get_jwt_identity()
     u = User.find_by_identity(email)
     if not u.verified_email:
-        data = {'error': 'Unverified email address', 'statusCode': 403}
+        data = {'error': 'Unverified email address'}
         return make_response(jsonify(data), 403)
     jwt = u.get_access_token()
-    data = {'access_token': jwt, 'message': 'Success',
-            'email': email, 'statusCode': 200}
+    data = {'access_token': jwt, 'message': 'Success', 'email': email}
     return make_response(jsonify(data), 200)
 
 
@@ -81,21 +80,17 @@ def register():
         password = request.json['password']
 
         if not validate_email(email):
-            data = {'error': email+' is not a valid email address',
-                    'statusCode': 400}
+            data = {'error': email+' is not a valid email address'}
             return make_response(jsonify(data), 400)
 
         if len(password) < 10:
-            data = {'error': 'Password must be at least 10 characters',
-                    'statusCode': 400}
+            data = {'error': 'Password must be at least 10 characters'}
             return make_response(jsonify(data), 400)
         elif len(password) > 128:
-            data = {'error': 'Max password length is 128 characters',
-                    'statusCode': 400}
+            data = {'error': 'Max password length is 128 characters'}
             return make_response(jsonify(data), 400)
         elif len(email) > 255:
-            data = {'error': 'Max email length is 255 characters',
-                    'statusCode': 400}
+            data = {'error': 'Max email length is 255 characters'}
             return make_response(jsonify(data), 400)
 
         u = User.register(email=email, password=password)
@@ -106,8 +101,8 @@ def register():
             message = 'Account registered for {0}. Email must be \
                 verified before the account can be used.'.format(u.email)
             # frontend client should remind user to verify their email
-            res = {'statusCode': 200, 'message': message, 'refresh_token': refresh_token}
-        except SMPTException:
+            res = {'message': message, 'refresh_token': refresh_token}
+        except SMTPException:
             # At present, the hosted application uses a free gmail
             # account. To avoid a user being prevented from verifying
             # their account due to gmail-related failings, the account
@@ -115,16 +110,15 @@ def register():
             # the mail client. This is a temporary fix until I get a
             # better mail situation set up.
             message = 'Account registered for {0}'.format(u.email)
-            u.verified_email();
-            a_tkn = u.get_access_token();
-            r_tkn = u.get_refresh_token();
-            res = {'statusCode': 200, 'message': message,
-                    'access_token': a_tkn, 'refresh_token': r_tkn}
+            u.verified_email()
+            a_tkn = u.get_access_token()
+            r_tkn = u.get_refresh_token()
+            res = {'message': message, 'access_token': a_tkn,
+                   'refresh_token': r_tkn}
         return make_response(jsonify(res), 200)
 
     except UserExistsError:
-        res = {'statusCode': 400,
-               'error': 'Account already registered for that email'}
+        res = {'error': 'Account already registered for that email'}
         return make_response(jsonify(res), 400)
 
     except (AttributeError, TypeError, KeyError):
