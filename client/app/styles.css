@@ -53,12 +53,22 @@ input {
   margin: 0px;
 }
 
+.note-li:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
 #new-note-button {
   font-size: 2em;
   margin-bottom: 20px;
   border-radius: 5px;
   background-color: #0c6;
   border: solid #0c6 2px;
+}
+
+#new-note-button:hover {
+  background-color: #2d8;
+  cursor: pointer;
 }
 
 #new-note-button.selected-note-li {
