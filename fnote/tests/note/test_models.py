@@ -18,6 +18,10 @@ class TestNote(object):
         found_note = Note.find_by_hash_id(hash_id)
         assert note == found_note
 
+    def test_find_by_title(self, user, session, note):
+        found_note = Note.find_by_title(note.title, user)
+        assert note == found_note
+
     def test_update_title(self, note, session):
         new_title = 'new_title'
         note.update_title(new_title)

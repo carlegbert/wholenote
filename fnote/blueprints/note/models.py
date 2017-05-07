@@ -53,6 +53,13 @@ class Note(db.Model):
         id = hashids.decode(hash_id)
         return Note.find_by_id(id)
 
+    @classmethod
+    def find_by_title(self, title, user):
+        """Retrieve note owned by <user> named <title>"""
+        return Note.query.filter(Note.user == user) \
+                         .filter(Note.title == title) \
+                         .first()
+
     def update_title(self, new_title):
         """ Change title of note
         :new_title: String
@@ -90,3 +97,8 @@ class Note(db.Model):
                 'lastModified': self.last_modified,
                 }
         return data
+
+    def find_matching_titles(self):
+        matches = Note.query.filter(Note.owner == self.owner) \
+                            .filter(Note.title == self.title)
+        return len(matches)
