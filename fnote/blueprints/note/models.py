@@ -11,7 +11,8 @@ class Note(db.Model):
     """Text object, belonging to a single user.
     The 'hashid' is a short string that serves as the client-facing
     id. It exists to obfuscate primary keys, not to provide any significant
-    security. It isn't saved to the database."""
+    security. It isn't saved to the database. Currently it is not used for anything,
+    but it may be useful in the future if a non-changing identifier is needed."""
 
     __tablename__ = 'note'
     id = db.Column(db.Integer, primary_key=True)

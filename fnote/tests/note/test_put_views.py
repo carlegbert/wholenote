@@ -1,6 +1,5 @@
 from fnote.tests.json_helpers import get_json, put_json
 from fnote.blueprints.note.models import Note
-from fnote.extensions import hashids
 
 
 URL = '/api/v1.0/notes'
@@ -14,7 +13,7 @@ class TestPutNoteViews(object):
     def test_put_single_note(self, client, user, unfresh_token, session):
         note = Note(user.id, 'title', 'text').save()
         auth = {'Authorization': 'Bearer '+unfresh_token}
-        url = '{0}/{1}'.format(URL, hashids.encode(note.id))
+        url = '{0}/{1}'.format(URL, note.title)
         data = {'title': 'new_title', 'text': 'new_text'}
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
@@ -27,7 +26,7 @@ class TestPutNoteViews(object):
         note = Note(user.id, 'title', 'text').save()
         old_date = note.last_modified
         auth = {'Authorization': 'Bearer '+unfresh_token}
-        url = '{0}/{1}'.format(URL, hashids.encode(note.id))
+        url = '{0}/{1}'.format(URL, note.title)
         data = {'title': 'new_title', 'text': 'new_text'}
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
@@ -37,7 +36,7 @@ class TestPutNoteViews(object):
     def test_put_doesnt_insert(self, client, user, unfresh_token, session):
         note = Note(user.id, 'title', 'text').save()
         auth = {'Authorization': 'Bearer '+unfresh_token}
-        url = '{0}/{1}'.format(URL, hashids.encode(note.id))
+        url = '{0}/{1}'.format(URL, note.title)
         data = {'title': 'new_title', 'text': 'new_text'}
         before_len = len(Note.query.all())
         response = put_json(client, url, data, auth)
@@ -53,7 +52,7 @@ class TestPutNoteViews(object):
         refresh = client.post('/api/v1.0/refresh', headers=auth)
         unfresh_tkn = get_json(refresh)['access_token']
         auth = {'AUthorization': 'Bearer ' + unfresh_tkn}
-        url = '{0}/{1}'.format(URL, hashids.encode(note.id))
+        url = '{0}/{1}'.format(URL, note.title)
         data = {'title': 'new_title', 'text': 'new_text'}
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
@@ -67,7 +66,7 @@ class TestPutNoteViews(object):
         # and list note properties that can be updated.
         note = Note(user.id, 'title', 'text').save()
         auth = {'Authorization': 'Bearer '+unfresh_token}
-        url = '{0}/{1}'.format(URL, hashids.encode(note.id))
+        url = '{0}/{1}'.format(URL, note.title)
         data = {'x': 'y', 'z': 'a'}
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
@@ -77,7 +76,7 @@ class TestPutNoteViews(object):
     def test_put_note_no_data(self, client, user, unfresh_token):
         note = Note(user.id, 'title', 'text').save()
         auth = {'Authorization': 'Bearer '+unfresh_token}
-        url = '{0}/{1}'.format(URL, hashids.encode(note.id))
+        url = '{0}/{1}'.format(URL, note.title)
         response = client.put(url, headers=auth)
         response_data = get_json(response)
         assert response.status_code == 400
@@ -89,7 +88,7 @@ class TestPutNoteViews(object):
         auth = {'Authorization': 'Bearer ' + unfresh_token}
         long_title = 'abcdefghijklmnopqrstuvwxyz' * 10
         expected_title = long_title[:255]
-        url = '{0}/{1}'.format(URL, hashids.encode(note.id))
+        url = '{0}/{1}'.format(URL, note.title)
         data = {'title': long_title, 'text': 'new_text'}
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
