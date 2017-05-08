@@ -13,7 +13,7 @@ class TestPostNoteViews(object):
         response = post_json(client, URL, data, auth)
         response_data = get_json(response)
         assert response.status_code == 201
-        assert response_data['message'] == 'Note created'
+        assert response_data['msg'] == 'Note created'
 
     def test_post_from_refresh(self, client, refresh_token, session):
         auth = {'Authorization': 'Bearer ' + refresh_token}
@@ -24,7 +24,7 @@ class TestPostNoteViews(object):
         response = post_json(client, URL, data, auth)
         response_data = get_json(response)
         assert response.status_code == 201
-        assert response_data['message'] == 'Note created'
+        assert response_data['msg'] == 'Note created'
 
     def test_post_new_bad_data(self, client, unfresh_token):
         auth = {'Authorization': 'Bearer ' + unfresh_token}
@@ -32,14 +32,14 @@ class TestPostNoteViews(object):
         response = post_json(client, URL, data, auth)
         response_data = get_json(response)
         assert response.status_code == 400
-        assert response_data['error'] == 'Missing parameters in JSON data'
+        assert response_data['msg'] == 'Missing parameters in JSON data'
 
     def test_post_new_no_data(self, client, unfresh_token):
         auth = {'Authorization': 'Bearer ' + unfresh_token}
         response = client.post(URL, headers=auth)
         response_data = get_json(response)
         assert response.status_code == 400
-        assert response_data['error'] == 'Missing JSON data'
+        assert response_data['msg'] == 'Missing JSON data'
 
     def test_post_note_bad_jwt(self, client):
         auth = {'Authorization': 'Bearer: not_a_real_token'}
@@ -56,5 +56,5 @@ class TestPostNoteViews(object):
         response = post_json(client, URL, data, auth)
         response_data = get_json(response)
         assert response.status_code == 201
-        assert response_data['message'] == 'Note created'
+        assert response_data['msg'] == 'Note created'
         assert response_data['note']['title'] == expected_title

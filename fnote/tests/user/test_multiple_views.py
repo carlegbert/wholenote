@@ -19,7 +19,7 @@ class TestMultipleViews(object):
 
         assert reg_response.status_code == 200
         assert login_response.status_code == 403
-        assert login_response_data['error'] == 'Unverified email address'
+        assert login_response_data['msg'] == 'Unverified email address'
 
     def test_register_login_with_verify(self, client, session, mail):
         post_data = {'email': 'verify@localhost', 'password': 'hunter2pswd'}

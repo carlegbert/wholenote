@@ -7,10 +7,10 @@ class TestErrorHandlers(object):
         response = client.get(url_for('user.register'))
         response_data = get_json(response)
         assert response.status_code == 405
-        assert response_data['error'] == 'Method not allowed'
+        assert response_data['msg'] == 'Method not allowed'
 
     def test_not_found(self, client):
         response = client.get('/not/a/real/url')
         response_data = get_json(response)
         assert response.status_code == 404
-        assert response_data['error'] == 'Not found'
+        assert response_data['msg'] == 'Not found'

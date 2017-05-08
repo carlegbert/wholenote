@@ -13,7 +13,7 @@ class TestDeleteNoteViews(object):
         response = client.delete(url, headers=auth)
         response_data = get_json(response)
         assert response.status_code == 200
-        assert response_data['message'] == 'Note {0} deleted'.format(note.title)
+        assert response_data['msg'] == 'Note {0} deleted'.format(note.title)
 
     def test_delete_refresh(self, client, refresh_token, session, note):
         url = '{0}/{1}'.format(URL, note.title)
@@ -24,4 +24,4 @@ class TestDeleteNoteViews(object):
         response = client.delete(url, headers=auth)
         response_data = get_json(response)
         assert response.status_code == 200
-        assert response_data['message'] == 'Note {0} deleted'.format(note.title)
+        assert response_data['msg'] == 'Note {0} deleted'.format(note.title)

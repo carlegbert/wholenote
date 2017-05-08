@@ -117,8 +117,3 @@ class Note(db.Model):
                 'lastModified': self.last_modified,
                 }
         return data
-
-    def find_matching_titles(self):
-        matches = Note.query.filter(Note.owner == self.owner) \
-                            .filter(Note.title == self.title)
-        return len(matches)

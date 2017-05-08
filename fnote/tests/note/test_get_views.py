@@ -60,7 +60,7 @@ class TestGetNoteViews(object):
         response = client.get(url, headers=auth)
         response_data = get_json(response)
         assert response.status_code == 404
-        assert 'No note found' in response_data['error']
+        assert 'No note found' in response_data['msg']
 
     def test_single_note_no_jwt(self, client, note):
         url = '{0}/{1}'.format(URL, note.title)

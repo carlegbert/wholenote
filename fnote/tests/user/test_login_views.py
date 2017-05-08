@@ -14,7 +14,7 @@ class TestLoginViews(object):
         msg = 'Login for {0} successful'.format('testuser@localhost')
         assert response_data['refresh_token']
         assert response_data['access_token']
-        assert response_data['message'] == msg
+        assert response_data['msg'] == msg
         assert response.status_code == 200
 
     def test_login_updates_activity_tracking(self, client, user, auth_header):
@@ -32,7 +32,7 @@ class TestLoginViews(object):
         response = client.post(URL, headers=auth)
         response_data = get_json(response)
         msg = 'Login failed (incorrect email or password)'
-        assert response_data['error'] == msg
+        assert response_data['msg'] == msg
         assert response.status_code == 403
 
     def test_login_bad_email(self, client):
@@ -41,7 +41,7 @@ class TestLoginViews(object):
         response = client.post(URL, headers=auth)
         response_data = get_json(response)
         msg = 'Login failed (incorrect email or password)'
-        assert response_data['error'] == msg
+        assert response_data['msg'] == msg
         assert response.status_code == 403
 
     def test_login_bad_header(self, client):
@@ -65,4 +65,4 @@ class TestLoginViews(object):
         response = client.post(URL, headers=auth)
         response_data = get_json(response)
         assert response.status_code == 403
-        assert response_data['error'] == 'Unverified email address'
+        assert response_data['msg'] == 'Unverified email address'

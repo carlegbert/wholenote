@@ -36,13 +36,13 @@ def note_no_id():
             text = request.json['text']
             n = Note(u.id, title, text).save()
             note_data = n.to_dict()
-            data = {'message': 'Note created', 'note': note_data}
+            data = {'msg': 'Note created', 'note': note_data}
             return make_response(jsonify(data), 201)
         except KeyError:
-            data = {'error': 'Missing parameters in JSON data'}
+            data = {'msg': 'Missing parameters in JSON data'}
             return make_response(jsonify(data), 400)
         except TypeError:
-            data = {'error': 'Missing JSON data'}
+            data = {'msg': 'Missing JSON data'}
             return make_response(jsonify(data), 400)
 
 
@@ -57,16 +57,13 @@ def note_by_title_id(title_id):
     u = User.find_by_identity(email)  # TODO: figure out if this can fail??
     n = Note.find_by_title_id(title_id, u)
     if not n:
-        data = {'error': 'No note found for that id'}
+        data = {'msg': 'No note found for that id'}
         return make_response(jsonify(data), 404)
-    if n not in u.notes:
-        data = {'error': u.email + 'does not have access to that note'}
-        return make_response(jsonify(data), 403)
     if request.method == 'GET':
         data = n.to_dict()
         return make_response(jsonify(data), 200)
     elif request.method == 'DELETE':
-        data = {'message': 'Note {0} deleted'.format(title_id)}
+        data = {'msg': 'Note {0} deleted'.format(title_id)}
         n.delete()
         return make_response(jsonify(data), 200)
     elif request.method == 'PUT':
@@ -79,14 +76,14 @@ def put_note(note, request):
     """
     new_data = request.json
     if not new_data:
-        data = {'error': 'Missing JSON data'}
+        data = {'msg': 'Missing JSON data'}
         return make_response(jsonify(data), 400)
     new_text = new_data.get('text', '')
     new_title = new_data.get('title', '')
     if len(new_title) > 255:
         new_title = new_title[:255]
     if not new_text and not new_title:
-        data = {'error': "Missing parameters in JSON data.\n\
+        data = {'msg': "Missing parameters in JSON data.\n\
                 Valid parameters: 'title', 'text'"}
         return make_response(jsonify(data), 400)
     if new_text and new_text != note.text:
@@ -94,5 +91,5 @@ def put_note(note, request):
     if new_title and new_title != note.title:
         note.update_title(new_title)
     n_data = note.to_dict()
-    data = {'message': 'Note updated', 'note': n_data}
+    data = {'msg': 'Note updated', 'note': n_data}
     return make_response(jsonify(data), 200)

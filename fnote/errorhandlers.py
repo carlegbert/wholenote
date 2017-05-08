@@ -8,40 +8,40 @@ def register_errorhandlers(app):
 
     @app.errorhandler(400)
     def bad_request(error):
-        data = {'error': 'Bad request', 'statusCode': 401}
+        data = {'msg': 'Bad request', 'statusCode': 401}
         return make_response(jsonify(data), 400)
 
     @app.errorhandler(401)
     def auth_missing(error):
-        data = {'error': 'Missing authentication data',
+        data = {'msg': 'Missing authentication data',
                 'statusCode': 401}
         return make_response(jsonify(data), 401)
 
     @app.errorhandler(403)
     def forbidden(error):
-        data = {'error': 'Forbidden', 'statusCode': 403}
+        data = {'msg': 'Forbidden', 'statusCode': 403}
         return make_response(jsonify(data), 403)
 
     @app.errorhandler(404)
     def not_found(error):
-        data = {'error': 'Not found',
+        data = {'msg': 'Not found',
                 'statusCode': 404}
         return make_response(jsonify(data), 404)
 
     @app.errorhandler(405)
     def bad_method(error):
-        data = {'error': 'Method not allowed',
+        data = {'msg': 'Method not allowed',
                 'statusCode': 405}
         return make_response(jsonify(data), 405)
 
     @app.errorhandler(422)
     def bad_auth_header(error):
-        data = {'error': 'Bad authentication data',
+        data = {'msg': 'Bad authentication data',
                 'statusCode': 422}
         return make_response(jsonify(data), 422)
 
     @app.errorhandler(500)
     def internal_server_error(error):
-        data = {'error': 'Internal server error',
+        data = {'msg': 'Internal server error',
                 'statusCode': 500}
         return make_response(jsonify(data), 500)
