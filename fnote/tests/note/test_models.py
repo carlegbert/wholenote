@@ -5,7 +5,7 @@ from fnote.extensions import hashids
 class TestNote(object):
     def test_save_to_db(self, user, session):
         note_num = len(Note.query.all())
-        Note(user.id, 'test_note', 'note text').save()
+        Note(user.id, 'test_note_2', 'note text').save()
         new_note_num = len(Note.query.all())
         assert new_note_num == note_num + 1
 
@@ -19,13 +19,14 @@ class TestNote(object):
         assert note == found_note
 
     def test_find_by_title(self, user, session, note):
-        found_note = Note.find_by_title(note.title, user)
+        found_note = Note.find_by_title_id(note.title_id, user)
         assert note == found_note
 
     def test_update_title(self, note, session):
         new_title = 'new_title'
         note.update_title(new_title)
         assert note.title == new_title
+        assert note.title_id == new_title
 
     def test_update_text(self, note, session):
         new_text = 'new note text'
@@ -41,7 +42,7 @@ class TestNote(object):
         assert not found_note
 
     def test_get_user_notes(self, user, note, session):
-        note_two = Note(user.id, 'test_note', 'note text').save()
+        note_two = Note(user.id, 'test_note_2', 'note text').save()
         notes = user.get_notes()
         note_num = len(notes)
         assert note_num == 2
@@ -60,3 +61,14 @@ class TestNote(object):
         note.update_title('new_title')
         new_dt = note.last_modified
         assert new_dt != old_dt
+
+    def test_titleid_cleaned(self, user, session):
+        n = Note(user.id, title='New_!@#$%%^&*()123"\';:<>[]{}\\|`/ Note')
+        assert n.title_id == 'New_123Note'
+
+    #  def test_same_titleid_fails(self, user, session):
+    #      n1 = Note(user.id, title='title')
+    #      n1.save()
+    #      n2 = Note(user.id, title='title')
+    #      n2.save()
+    #      assert 0

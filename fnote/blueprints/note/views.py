@@ -46,16 +46,16 @@ def note_no_id():
             return make_response(jsonify(data), 400)
 
 
-@note.route('/api/v1.0/notes/<title>', methods=['GET', 'DELETE', 'PUT'])
+@note.route('/api/v1.0/notes/<title_id>', methods=['GET', 'DELETE', 'PUT'])
 @jwt_required
-def note_by_title(title):
+def note_by_title_id(title_id):
     """Gets, deletes, or updates single note. Note's owner is checked against
     identity from JWT.
     :return: JSON response.
     """
     email = get_jwt_identity()
     u = User.find_by_identity(email)  # TODO: figure out if this can fail??
-    n = Note.find_by_title(title, u)
+    n = Note.find_by_title_id(title_id, u)
     if not n:
         data = {'error': 'No note found for that id'}
         return make_response(jsonify(data), 404)
@@ -66,7 +66,7 @@ def note_by_title(title):
         data = n.to_dict()
         return make_response(jsonify(data), 200)
     elif request.method == 'DELETE':
-        data = {'message': 'Note {0} deleted'.format(title)}
+        data = {'message': 'Note {0} deleted'.format(title_id)}
         n.delete()
         return make_response(jsonify(data), 200)
     elif request.method == 'PUT':
@@ -74,7 +74,7 @@ def note_by_title(title):
 
 
 def put_note(note, request):
-    """Modify note. Called by .../notes/<title> view.
+    """Modify note. Called by .../notes/<title_id> view.
     :return: JSON response
     """
     new_data = request.json
