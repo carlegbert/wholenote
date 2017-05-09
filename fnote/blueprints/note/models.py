@@ -79,26 +79,21 @@ class Note(db.Model):
                          .filter(Note.title_id == title_id) \
                          .first()
 
-    def update_title(self, new_title):
-        """ Change title of note
+    def update(self, text=None, title=None):
+        """ Change title and text of note
         :new_title: String
         :returns: Self
         """
-        self.title = new_title
-        self.title_id = Note.clean_title(new_title)
-        self.last_modified = datetime.utcnow()
-        db.session.add(self)
-        db.session.commit()
-        return self
+        if title is not None and self.title != title:
+            self.title = title
+            self.title_id = Note.clean_title(title)
+            db.session.add(self)
+            self.last_modified = datetime.utcnow()
+        if text is not None and self.text != text:
+            self.text = text
+            db.session.add(self)
+            self.last_modified = datetime.utcnow()
 
-    def update_text(self, new_text):
-        """Update text of note
-        :new_text: String
-        :returns: Self
-        """
-        self.text = new_text
-        self.last_modified = datetime.utcnow()
-        db.session.add(self)
         db.session.commit()
         return self
 

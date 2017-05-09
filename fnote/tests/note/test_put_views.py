@@ -94,3 +94,14 @@ class TestPutNoteViews(object):
         response_data = get_json(response)
         assert response.status_code == 200
         assert response_data['note']['title'] == expected_title
+
+    def test_duplicate_title_update(self, client, unfresh_token, user):
+        note1 = Note(user.id, 'title', 'text').save()
+        note2 = Note(user.id, 'title2', 'text').save()
+        auth = {'Authorization': 'Bearer ' + unfresh_token}
+        data = {'title': note1.title}
+        url = '{0}/{1}'.format(URL, note2.title)
+        response = put_json(client, url, data, auth)
+        response_data = get_json(response)
+        assert response.status_code == 400
+        assert 'title' in response_data['msg']

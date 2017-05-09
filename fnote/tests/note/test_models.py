@@ -1,3 +1,6 @@
+import pytest
+from sqlalchemy import exc
+
 from fnote.blueprints.note.models import Note
 from fnote.extensions import hashids
 
@@ -24,13 +27,13 @@ class TestNote(object):
 
     def test_update_title(self, note, session):
         new_title = 'new_title'
-        note.update_title(new_title)
+        note.update(title=new_title)
         assert note.title == new_title
         assert note.title_id == new_title
 
     def test_update_text(self, note, session):
         new_text = 'new note text'
-        note.update_text(new_text)
+        note.update(text=new_text)
 
     def test_delete_note(self, note, session):
         nid = note.id
@@ -58,7 +61,7 @@ class TestNote(object):
 
     def test_update_changes_date(self, note):
         old_dt = note.last_modified
-        note.update_title('new_title')
+        note.update(title='new_title')
         new_dt = note.last_modified
         assert new_dt != old_dt
 
@@ -66,9 +69,10 @@ class TestNote(object):
         n = Note(user.id, title='New_!@#$%%^&*()123"\';:<>[]{}\\|`/ Note')
         assert n.title_id == 'New_123Note'
 
-    #  def test_same_titleid_fails(self, user, session):
-    #      n1 = Note(user.id, title='title')
-    #      n1.save()
-    #      n2 = Note(user.id, title='title')
-    #      n2.save()
-    #      assert 0
+    def test_same_titleid_fails(self, user, session):
+        with pytest.raises(exc.IntegrityError) as exception:
+            n1 = Note(user.id, title='title')
+            n1.save()
+            n2 = Note(user.id, title='title')
+            n2.save()
+        assert 'duplicate' in str(exception)

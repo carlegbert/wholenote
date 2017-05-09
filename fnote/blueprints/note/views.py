@@ -5,9 +5,11 @@ from flask import (
         request,
         )
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import exc
 
 from fnote.blueprints.user.models import User
 from fnote.blueprints.note.models import Note
+from fnote.extensions import db
 
 
 note = Blueprint('note', __name__)
@@ -44,6 +46,12 @@ def note_no_id():
         except TypeError:
             data = {'msg': 'Missing JSON data'}
             return make_response(jsonify(data), 400)
+        except exc.IntegrityError:
+            # catch note with duplicate title_id being inserted into DB
+            # TODO: automatically number these instead of forbidding them
+            db.session.rollback()
+            data = {'msg': 'You already have a note with a similar title'}
+            return make_response(jsonify(data), 400)
 
 
 @note.route('/api/v1.0/notes/<title_id>', methods=['GET', 'DELETE', 'PUT'])
@@ -72,24 +80,31 @@ def note_by_title_id(title_id):
 
 def put_note(note, request):
     """Modify note. Called by .../notes/<title_id> view.
+    Bad PUT requests (duplicate or title) will cause the entire request
+    to fail.
     :return: JSON response
     """
     new_data = request.json
     if not new_data:
         data = {'msg': 'Missing JSON data'}
         return make_response(jsonify(data), 400)
-    new_text = new_data.get('text', '')
-    new_title = new_data.get('title', '')
-    if len(new_title) > 255:
+    new_text = new_data.get('text', None)
+    new_title = new_data.get('title', None)
+    if new_title and len(new_title) > 255:
         new_title = new_title[:255]
-    if not new_text and not new_title:
+    if new_text is None and new_title is None:
         data = {'msg': "Missing parameters in JSON data.\n\
                 Valid parameters: 'title', 'text'"}
         return make_response(jsonify(data), 400)
-    if new_text and new_text != note.text:
-        note.update_text(new_text)
-    if new_title and new_title != note.title:
-        note.update_title(new_title)
+
+    try:
+        note.update(title=new_title, text=new_text)
+        msg = 'Note updated'
+        status_code = 200
+    except exc.IntegrityError:
+        db.session.rollback()
+        msg = 'You already have a note with a similar title'
+        status_code = 400
     n_data = note.to_dict()
-    data = {'msg': 'Note updated', 'note': n_data}
-    return make_response(jsonify(data), 200)
+    data = {'msg': msg, 'note': n_data}
+    return make_response(jsonify(data), status_code)

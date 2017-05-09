@@ -58,3 +58,13 @@ class TestPostNoteViews(object):
         assert response.status_code == 201
         assert response_data['msg'] == 'Note created'
         assert response_data['note']['title'] == expected_title
+
+    def test_duplicate_title_insert_fails(self, client, unfresh_token):
+        auth = {'Authorization': 'Bearer ' + unfresh_token}
+        data = {'title': 'dupetitle', 'text': 'text'}
+        response_one = post_json(client, URL, data, auth)
+        response_two = post_json(client, URL, data, auth)
+        response_data = get_json(response_two)
+        assert response_one.status_code == 201
+        assert response_two.status_code == 400
+        assert 'title' in response_data['msg']
