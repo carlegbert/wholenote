@@ -1,7 +1,7 @@
 from datetime import datetime
 import re
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, exc
 from sqlalchemy.orm import relationship
 from fnote.extensions import db
 from fnote.extensions import hashids
@@ -43,9 +43,13 @@ class Note(db.Model):
         """Save note to database.
         :return: self
         """
-        self.last_modified = datetime.utcnow()
-        db.session.add(self)
-        db.session.commit()
+        try:
+            self.last_modified = datetime.utcnow()
+            db.session.add(self)
+            db.session.commit()
+        except exc.IntegrityError:
+            db.session.rollback()
+            self.number_title()
 
         return self
 
@@ -84,17 +88,21 @@ class Note(db.Model):
         :new_title: String
         :returns: Self
         """
-        if title is not None and self.title != title:
-            self.title = title
-            self.title_id = Note.clean_title(title)
-            db.session.add(self)
-            self.last_modified = datetime.utcnow()
-        if text is not None and self.text != text:
-            self.text = text
-            db.session.add(self)
-            self.last_modified = datetime.utcnow()
+        try:
+            if title is not None and self.title != title:
+                self.title = title
+                self.title_id = Note.clean_title(title)
+                db.session.add(self)
+                self.last_modified = datetime.utcnow()
+            if text is not None and self.text != text:
+                self.text = text
+                db.session.add(self)
+                self.last_modified = datetime.utcnow()
 
-        db.session.commit()
+            db.session.commit()
+        except exc.IntegrityError:
+            db.session.rollback()
+            self.number_title()
         return self
 
     def delete(self):
