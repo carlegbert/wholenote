@@ -104,11 +104,29 @@ class Note(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def number_title(self, attempts=1):
+        """In case an attempt is made to create a note with an identical
+        title_id, we need to stick a number on the end. This function
+        recursively calls itself until it succeeds; there is definitely
+        a better way to do it. (Maybe SQLAlchemy can handle it? Also could
+        avoid multiple db transactions by adding more columns?...)
+        Will come back to this..."""
+        old_title = self.title_id
+        try:
+            self.title_id = self.title_id + str(attempts+1)
+            db.session.add(self)
+            db.session.commit()
+        except exc.IntegrityError:
+            db.session.rollback()
+            attempts += 1
+            self.title_id = old_title
+            self.number_title(attempts)
+
     def to_dict(self):
         data = {'title': self.title,
                 'text': self.text,
                 'owner': self.user.email,
-                'id': hashids.encode(self.id),
+                'id': self.title_id,
                 'lastModified': self.last_modified,
                 }
         return data
