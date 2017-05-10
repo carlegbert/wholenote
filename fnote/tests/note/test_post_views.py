@@ -47,7 +47,7 @@ class TestPostNoteViews(object):
         response = post_json(client, URL, data, auth)
         assert response.status_code == 422
 
-    def test_post_long_title_shortens(self, client, unfresh_token):
+    def test_post_long_title_shortens(self, client, unfresh_token, session):
         # title longer than 255 chars should shorten to 255
         auth = {'Authorization': 'Bearer ' + unfresh_token}
         long_title = 'abcdefghijklmnopqrstuvwxyz' * 10
@@ -59,12 +59,12 @@ class TestPostNoteViews(object):
         assert response_data['msg'] == 'Note created'
         assert response_data['note']['title'] == expected_title
 
-    def test_duplicate_title_insert_fails(self, client, unfresh_token):
+    def test_same_title_insert_fails(self, client, unfresh_token, session):
         auth = {'Authorization': 'Bearer ' + unfresh_token}
         data = {'title': 'dupetitle', 'text': 'text'}
         response_one = post_json(client, URL, data, auth)
         response_two = post_json(client, URL, data, auth)
         response_data = get_json(response_two)
         assert response_one.status_code == 201
-        assert response_two.status_code == 400
-        assert 'title' in response_data['msg']
+        assert response_two.status_code == 201
+        assert response_data['note']['id'] == 'dupetitle2'

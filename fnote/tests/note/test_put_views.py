@@ -82,7 +82,7 @@ class TestPutNoteViews(object):
         assert response.status_code == 400
         assert 'Missing JSON data' in response_data['msg']
 
-    def test_put_long_title_shortens(self, client, user, unfresh_token):
+    def test_put_long_title(self, client, user, unfresh_token, session):
         # title longer than 255 chars should shorten to 255
         note = Note(user.id, 'title', 'text').save()
         auth = {'Authorization': 'Bearer ' + unfresh_token}
@@ -95,13 +95,14 @@ class TestPutNoteViews(object):
         assert response.status_code == 200
         assert response_data['note']['title'] == expected_title
 
-    def test_duplicate_title_update(self, client, unfresh_token, user):
-        note1 = Note(user.id, 'title', 'text').save()
-        note2 = Note(user.id, 'title2', 'text').save()
+    def test_same_title_update(self, client, unfresh_token, user, session):
+        note1 = Note(user.id, 'duplicatetitle', 'text').save()
+        note2 = Note(user.id, 'uniquetitle', 'text').save()
         auth = {'Authorization': 'Bearer ' + unfresh_token}
         data = {'title': note1.title}
-        url = '{0}/{1}'.format(URL, note2.title)
+        url = '{0}/{1}'.format(URL, note2.title_id)
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
-        assert response.status_code == 400
-        assert 'title' in response_data['msg']
+        assert response.status_code == 200
+        assert note2.title_id == 'duplicatetitle2'
+        assert response_data['note']['id'] == 'duplicatetitle2'

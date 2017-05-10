@@ -69,10 +69,9 @@ class TestNote(object):
         n = Note(user.id, title='New_!@#$%%^&*()123"\';:<>[]{}\\|`/ Note')
         assert n.title_id == 'New_123Note'
 
-    def test_same_titleid_fails(self, user, session):
-        with pytest.raises(exc.IntegrityError) as exception:
-            n1 = Note(user.id, title='title')
-            n1.save()
-            n2 = Note(user.id, title='title')
-            n2.save()
-        assert 'duplicate' in str(exception)
+    def test_same_titleid_succeeds(self, user, session):
+        n1 = Note(user.id, title='title')
+        n1.save()
+        n2 = Note(user.id, title='title')
+        n2.save()
+        assert n2.title_id == n1.title_id + '2'

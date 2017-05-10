@@ -49,7 +49,7 @@ class Note(db.Model):
             db.session.commit()
         except exc.IntegrityError:
             db.session.rollback()
-            self.number_title()
+            self.number_title_id(self.title)
 
         return self
 
@@ -88,21 +88,21 @@ class Note(db.Model):
         :new_title: String
         :returns: Self
         """
-        try:
-            if title is not None and self.title != title:
-                self.title = title
-                self.title_id = Note.clean_title(title)
-                db.session.add(self)
-                self.last_modified = datetime.utcnow()
-            if text is not None and self.text != text:
-                self.text = text
-                db.session.add(self)
-                self.last_modified = datetime.utcnow()
+        if text is not None and self.text != text:
+            self.text = text
+            db.session.add(self)
+            self.last_modified = datetime.utcnow()
 
-            db.session.commit()
-        except exc.IntegrityError:
-            db.session.rollback()
-            self.number_title()
+        if title is not None and self.title != title:
+            self.title = title
+            self.title_id = Note.clean_title(title)
+            self.last_modified = datetime.utcnow()
+            try:
+                db.session.add(self)
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                self.number_title_id(title)
         return self
 
     def delete(self):
@@ -112,23 +112,22 @@ class Note(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def number_title(self, attempts=1):
+    def number_title_id(self, title, attempts=1):
         """In case an attempt is made to create a note with an identical
         title_id, we need to stick a number on the end. This function
-        recursively calls itself until it succeeds; there is definitely
-        a better way to do it. (Maybe SQLAlchemy can handle it? Also could
-        avoid multiple db transactions by adding more columns?...)
-        Will come back to this..."""
-        old_title = self.title_id
+        recursively calls itself until it succeeds.  """
+        # TODO: instead of using recursion, use a SQL statement with regex
+
         try:
-            self.title_id = self.title_id + str(attempts+1)
+            self.title = title
+            self.title_id = Note.clean_title(title) + str(attempts+1)
             db.session.add(self)
             db.session.commit()
+            return None
         except exc.IntegrityError:
             db.session.rollback()
             attempts += 1
-            self.title_id = old_title
-            self.number_title(attempts)
+            self.number_title_id(title, attempts)
 
     def to_dict(self):
         data = {'title': self.title,

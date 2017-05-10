@@ -5,11 +5,9 @@ from flask import (
         request,
         )
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import exc
 
 from fnote.blueprints.user.models import User
 from fnote.blueprints.note.models import Note
-from fnote.extensions import db
 
 
 note = Blueprint('note', __name__)
@@ -45,12 +43,6 @@ def note_no_id():
             return make_response(jsonify(data), 400)
         except TypeError:
             data = {'msg': 'Missing JSON data'}
-            return make_response(jsonify(data), 400)
-        except exc.IntegrityError:
-            # catch note with duplicate title_id being inserted into DB
-            # TODO: automatically number these instead of forbidding them
-            db.session.rollback()
-            data = {'msg': 'You already have a note with a similar title'}
             return make_response(jsonify(data), 400)
 
 
@@ -97,14 +89,9 @@ def put_note(note, request):
                 Valid parameters: 'title', 'text'"}
         return make_response(jsonify(data), 400)
 
-    try:
-        note.update(title=new_title, text=new_text)
-        msg = 'Note updated'
-        status_code = 200
-    except exc.IntegrityError:
-        db.session.rollback()
-        msg = 'You already have a note with a similar title'
-        status_code = 400
+    note.update(title=new_title, text=new_text)
+    msg = 'Note updated'
+    status_code = 200
     n_data = note.to_dict()
     data = {'msg': msg, 'note': n_data}
     return make_response(jsonify(data), status_code)
