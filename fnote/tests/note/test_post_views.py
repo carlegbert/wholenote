@@ -67,4 +67,4 @@ class TestPostNoteViews(object):
         response_data = get_json(response_two)
         assert response_one.status_code == 201
         assert response_two.status_code == 201
-        assert response_data['note']['id'] == 'dupetitle2'
+        assert response_data['note']['id'] == 'dupetitle_2'

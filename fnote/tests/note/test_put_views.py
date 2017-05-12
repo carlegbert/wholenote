@@ -104,5 +104,5 @@ class TestPutNoteViews(object):
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
         assert response.status_code == 200
-        assert note2.title_id == 'duplicatetitle2'
-        assert response_data['note']['id'] == 'duplicatetitle2'
+        assert note2.title_id == 'duplicatetitle_2'
+        assert response_data['note']['id'] == 'duplicatetitle_2'

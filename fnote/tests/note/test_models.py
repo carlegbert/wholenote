@@ -1,6 +1,3 @@
-import pytest
-from sqlalchemy import exc
-
 from fnote.blueprints.note.models import Note
 from fnote.extensions import hashids
 
@@ -69,9 +66,14 @@ class TestNote(object):
         n = Note(user.id, title='New_!@#$%%^&*()123"\';:<>[]{}\\|`/ Note')
         assert n.title_id == 'New_123Note'
 
-    def test_same_titleid_succeeds(self, user, session):
-        n1 = Note(user.id, title='title')
-        n1.save()
-        n2 = Note(user.id, title='title')
-        n2.save()
-        assert n2.title_id == n1.title_id + '2'
+    def test_calculate_titleid(self, user, session):
+        n1 = Note(user.id, title='test_titleid').save()
+        n2 = Note(user.id, title='test_titleid').save()
+        assert n1.title_id == 'test_titleid'
+        assert n2.title_id == 'test_titleid_2'
+
+    def test_calculate_10_same_title(self, user, session):
+        for i in range(9):
+            Note(user.id, title='many_same_title').save()
+        last_note = Note(user.id, title='many_same_title').save()
+        assert last_note.title_id == 'many_same_title_10'

@@ -1,10 +1,10 @@
 from datetime import datetime
-import re
 
-from sqlalchemy import ForeignKey, exc
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from fnote.extensions import db
 from fnote.extensions import hashids
+from fnote.util.strings import format_urlsafe
 
 
 class Note(db.Model):
@@ -27,8 +27,7 @@ class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
     title = db.Column(db.String(255), nullable=False)
-    clean_title = db.Column(db.String(255), nullable=False)
-    title_id = db.Column(db.String(255), nullable=False, unique=True)
+    title_id = db.Column(db.String(255), unique=True)
     text = db.Column(db.Text())
     user = relationship('User')
     last_modified = db.Column(db.DateTime())
@@ -36,28 +35,18 @@ class Note(db.Model):
     def __init__(self, user_id, title='New Note', text=''):
         self.user_id = user_id
         self.title = title
+        self.title_id = self.calculate_title_id()
         self.text = text
-        self.title_id = Note.clean_title(title)
 
     def save(self):
         """Save note to database.
         :return: self
         """
-        try:
-            self.last_modified = datetime.utcnow()
-            db.session.add(self)
-            db.session.commit()
-        except exc.IntegrityError:
-            db.session.rollback()
-            self.number_title_id(self.title)
+        self.last_modified = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
 
         return self
-
-    @classmethod
-    def clean_title(cls, title):
-        """Remove URL-unfriendly characters from string"""
-        regexp = r'[^A-Za-z0-9_.~-]'
-        return re.sub(regexp, '', title)
 
     @classmethod
     def find_by_id(cls, id):
@@ -88,21 +77,19 @@ class Note(db.Model):
         :new_title: String
         :returns: Self
         """
+        changed = False
         if text is not None and self.text != text:
             self.text = text
-            db.session.add(self)
-            self.last_modified = datetime.utcnow()
+            changed = True
 
         if title is not None and self.title != title:
             self.title = title
-            self.title_id = Note.clean_title(title)
-            self.last_modified = datetime.utcnow()
-            try:
-                db.session.add(self)
-                db.session.commit()
-            except exc.IntegrityError:
-                db.session.rollback()
-                self.number_title_id(title)
+            self.title_id = self.calculate_title_id()
+            changed = True
+
+        if changed:
+            self.save()
+
         return self
 
     def delete(self):
@@ -112,22 +99,24 @@ class Note(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def number_title_id(self, title, attempts=1):
-        """In case an attempt is made to create a note with an identical
-        title_id, we need to stick a number on the end. This function
-        recursively calls itself until it succeeds.  """
-        # TODO: instead of using recursion, use a SQL statement with regex
+    def calculate_title_id(self):
+        urlsafe_title = format_urlsafe(self.title)
+        # regex for urlsafe title + 0 or 1 digits + EOL
+        repattern = '^%s(_[0-9]){0,1}$' % urlsafe_title
 
-        try:
-            self.title = title
-            self.title_id = Note.clean_title(title) + str(attempts+1)
-            db.session.add(self)
-            db.session.commit()
-            return None
-        except exc.IntegrityError:
-            db.session.rollback()
+        matches = Note.query.filter(Note.title_id.op('~')(repattern))
+        title_ids = []
+        for note in matches:
+            title_ids.append(note.title_id)
+        if not title_ids or urlsafe_title not in title_ids:
+            return urlsafe_title
+
+        attempts = 1
+        while True:
             attempts += 1
-            self.number_title_id(title, attempts)
+            attempt = urlsafe_title + '_' + str(attempts)
+            if attempt not in title_ids:
+                return attempt
 
     def to_dict(self):
         data = {'title': self.title,
