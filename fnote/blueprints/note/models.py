@@ -11,10 +11,10 @@ class Note(db.Model):
 
     """Text object, belonging to a single user.
 
-    title_id is a unique identifier that allows a descriptive, human-readable,
-    url-friendly string to be used as a key to retrieve a note. The note can
-    have a title that is non-unique and has special characters, but the
-    'cleaned' title will be used to retrieve notes.
+    title_id is a unique-to-user identifier that allows a descriptive,
+    human-readable, url-friendly string to be used as a key to retrieve a note.
+    The note can have a title that is non-unique and has special characters,
+    but the 'cleaned' title will be used to retrieve notes.
 
     The 'hashid' is a short string that serves as the client-facing
     id. It exists to obfuscate primary keys, not to provide any significant
@@ -27,7 +27,7 @@ class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
     title = db.Column(db.String(255), nullable=False)
-    title_id = db.Column(db.String(255), unique=True)
+    title_id = db.Column(db.String(255))
     text = db.Column(db.Text())
     user = relationship('User')
     last_modified = db.Column(db.DateTime())
@@ -100,11 +100,16 @@ class Note(db.Model):
         db.session.commit()
 
     def calculate_title_id(self):
+        """Looks for notes in db with matching numbered title_id to avoid
+        duplicates"""
         urlsafe_title = format_urlsafe(self.title)
         # regex for urlsafe title + 0 or 1 digits + EOL
         repattern = '^%s(_[0-9]){0,1}$' % urlsafe_title
 
-        matches = Note.query.filter(Note.title_id.op('~')(repattern))
+        matches = Note.query.filter(Note.user_id == self.user_id) \
+                            .filter(Note.id != self.id) \
+                            .filter(Note.title_id.op('~')(repattern))
+
         title_ids = []
         for note in matches:
             title_ids.append(note.title_id)

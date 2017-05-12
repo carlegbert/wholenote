@@ -1,4 +1,5 @@
 from fnote.blueprints.note.models import Note
+from fnote.blueprints.user.models import User
 from fnote.extensions import hashids
 
 
@@ -18,9 +19,13 @@ class TestNote(object):
         found_note = Note.find_by_hash_id(hash_id)
         assert note == found_note
 
-    def test_find_by_title(self, user, session, note):
+    def test_find_by_titleid(self, user, session, note):
         found_note = Note.find_by_title_id(note.title_id, user)
         assert note == found_note
+
+    def test_find_by_titleid_fails(self, user):
+        found_note = Note.find_by_title_id('nonexistent_note', user)
+        assert found_note is None
 
     def test_update_title(self, note, session):
         new_title = 'new_title'
@@ -77,3 +82,17 @@ class TestNote(object):
             Note(user.id, title='many_same_title').save()
         last_note = Note(user.id, title='many_same_title').save()
         assert last_note.title_id == 'many_same_title_10'
+
+    def test_sametitleid_diffuser(self, user, session):
+        u2 = User.register(email='othertestuser@localhost', password='x'*10)
+        n1 = Note(user.id, 'diffuser').save()
+        n2 = Note(u2.id, 'diffuser').save()
+        assert n1.title_id == n2.title_id
+
+    def test_titleid_wrong_user(self, user, session, note):
+        note = Note(user.id, title='wronguser', text='').save()
+        u2 = User.register(email='wrongusertest@localhost', password='x'*10)
+        u1_found_note = Note.find_by_title_id(note.title_id, user)
+        u2_found_note = Note.find_by_title_id('wronguser', u2)
+        assert u1_found_note == note
+        assert u2_found_note is None
