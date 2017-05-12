@@ -23,5 +23,6 @@ See documentation [here](API_ENDPOINTS.md)
 * served at localhost:9000
 
 #### Running tests:
+* Must be running container
 * `sudo docker-compose exec website py.test fnote`
-* Coverage: `sudo docker-compose exec website py.test --cov-report term-missing --cov fnote` (must be running container)
+* Coverage: `sudo docker-compose exec website py.test fnote --cov-report term-missing --cov`

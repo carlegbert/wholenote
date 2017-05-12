@@ -59,4 +59,4 @@ class TestRefreshViews(object):
         response = client.post(URL, headers=headers)
         response_data = get_json(response)
         assert response.status_code == 403
-        assert response_data['error'] == 'Unverified email address'
+        assert response_data['msg'] == 'Unverified email address'

@@ -28,10 +28,10 @@ def create_app(settings_override=None):
         app.config.update(settings_override)
 
     extensions(app)
+    register_errorhandlers(app)
     app.register_blueprint(page)
     app.register_blueprint(user)
     app.register_blueprint(note)
-    register_errorhandlers(app)
 
     db.app = app
     init_db()  # TODO: better db creation script

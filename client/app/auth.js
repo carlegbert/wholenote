@@ -31,7 +31,7 @@ export function loginRequest(store) {
     renderNavbar(store);
     getNoteRequest(store);
   }).fail((err) => {
-    const errMsg = err.responseJSON.error || err.responseJSON.msg;
+    const errMsg = err.responseJSON.msg;
     store.dispatch(authFail(email));
     renderLoginForm(store, errMsg);
   });
@@ -71,7 +71,7 @@ export function registerRequest(store) {
     }
     localStorage.setItem('refreshToken', res.refresh_token);
   }).fail((err) => {
-    const errMsg = err.responseJSON.error || err.responseJSON.msg;
+    const errMsg = err.responseJSON.msg;
     store.dispatch(authFail(email));
     renderRegisterForm(store, errMsg);
   });

@@ -11,7 +11,7 @@ class TestRegisterViews(object):
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
         msg = 'Account registered for {0}'.format('newuser@localhost.')
-        assert msg in response_data['message']
+        assert msg in response_data['msg']
         assert response_data['refresh_token']
         assert response.status_code == 200
 
@@ -21,14 +21,14 @@ class TestRegisterViews(object):
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
         msg = 'Account already registered for that email'
-        assert response_data['error'] == msg
+        assert response_data['msg'] == msg
         assert response.status_code == 400
 
     def test_register_no_data(self, client):
         response = client.post(URL)
         response_data = get_json(response)
         msg = 'Bad request'
-        assert response_data['error'] == msg
+        assert response_data['msg'] == msg
         assert response.status_code == 400
 
     def test_register_bad_data(self, client):
@@ -37,7 +37,7 @@ class TestRegisterViews(object):
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
         msg = 'Bad request'
-        assert response_data['error'] == msg
+        assert response_data['msg'] == msg
         assert response.status_code == 400
 
     def test_register_bad_email(self, client):
@@ -45,7 +45,7 @@ class TestRegisterViews(object):
                      'password': 'hunter2password'}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
-        assert 'not_real_address' in response_data['error']
+        assert 'not_real_address' in response_data['msg']
         assert response.status_code == 400
 
     def test_register_short_password_fails(self, client):
@@ -53,7 +53,7 @@ class TestRegisterViews(object):
                      'password': 'hunter2'}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
-        assert 'Password must be at least' in response_data['error']
+        assert 'Password must be at least' in response_data['msg']
         assert response.status_code == 400
 
     def test_long_email_sends_error(self, client):
@@ -61,7 +61,7 @@ class TestRegisterViews(object):
         post_data = {'email': long_email, 'password': 'hunter2password'}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
-        assert 'Max email length is 255 characters' in response_data['error']
+        assert 'Max email length is 255 characters' in response_data['msg']
         assert response.status_code == 400
 
     def test_long_password_sends_error(self, client):
@@ -69,5 +69,5 @@ class TestRegisterViews(object):
         post_data = {'email': 'testuser3@localhost', 'password': long_password}
         response = post_json(client, URL, post_data)
         response_data = get_json(response)
-        assert 'Max password length is 128 characters' in response_data['error']
+        assert 'Max password length is 128 characters' in response_data['msg']
         assert response.status_code == 400

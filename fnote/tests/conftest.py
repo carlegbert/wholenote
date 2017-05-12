@@ -19,7 +19,7 @@ def app():
     params = {
         'DEBUG': False,
         'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': test_db_uri
+        'SQLALCHEMY_DATABASE_URI': test_db_uri,
     }
 
     _app = create_app(settings_override=params)
@@ -50,7 +50,7 @@ def session(db):
     :return: None
     """
     db.session.begin_nested()
-    yield db
+    yield db.session
     db.session.rollback()
 
 
@@ -63,8 +63,6 @@ def db(app):
     _db.drop_all()
     _db.create_all()
 
-    # Create single user and single note. these are for use only in tests
-    # that will not mutate them.
     # Create single user and single note, accessible by using the 'user' and
     # 'note' fixtures below.  If these are mutated, be sure to use the
     # 'session' fixture so that they are rolled back to normal for other tests.

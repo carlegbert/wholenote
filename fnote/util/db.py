@@ -5,8 +5,8 @@ from fnote.extensions import db
 
 
 def init_db():
-    """ Initialize dev & test databases if necessary.
-    """
+    """ Initialize dev & test databases if necessary. """
+
     if not database_exists(SQLALCHEMY_DATABASE_URI):
         create_database(SQLALCHEMY_DATABASE_URI)
 
