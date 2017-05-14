@@ -94,3 +94,11 @@ class TestUser(object):
         ver_after = u.verified_email
         assert not ver_before
         assert ver_after
+
+    def test_case_insensitive_email(self, db, user):
+        found_user = User.find_by_identity('TesTUseR@locaLHoST')
+        assert found_user == user
+
+    def test_case_sensitive_pw(self, db, user):
+        result = user.check_password('HUNTER2PASSWORD')
+        assert not result

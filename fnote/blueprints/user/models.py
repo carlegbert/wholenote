@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy.orm import relationship
+from sqlalchemy import func
 from flask_jwt_extended import create_access_token, create_refresh_token
 
 from fnote.extensions import db
@@ -52,7 +53,8 @@ class User(db.Model):
         :type email: str
         :return: User
         """
-        return User.query.filter(User.email == email).first()
+        return User.query.filter(func.lower(User.email) ==
+                                 func.lower(email)).first()
 
     @classmethod
     def encrypt_pw(cls, pw_plain):
