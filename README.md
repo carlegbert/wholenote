@@ -15,14 +15,15 @@ and a refresh token. The refresh token should be securely stored by the client. 
 See documentation [here](API_ENDPOINTS.md)
 
 
-#### Running locally with Docker (you will need docker & docker-compose)
-* Rename `example.env` (in the base directory) to `.env` and change variable values in it as you see fit
-* Rename `fnote/config/settings.py.example` to `fnote/config/settings.py` and change variable values in it as you see fit
-* `sudo docker-compose up &`
-* use `--build` flag if container is new/updated
-* served at localhost:9000
+#### Running locally
+* You will need postgresql, python3, and virtualenv installed
+* Create dev and test postgres databases `fnote` and `fnote_test`
+* Rename `fnote/config/settings.py.example` to `fnote/config/settings.py` and change variable values in it as needed
+* `$ virtualenv -p /usr/bin/python3 venv`
+* `$ . venv/bin/activate`
+* `$ pip install -r requirements.txt`
+* `$ python fnote/grun.py` to run locally with gunicorn. Hosted at http://localhost:9000
 
 #### Running tests:
-* Must be running container
-* `sudo docker-compose exec website py.test fnote`
-* Coverage: `sudo docker-compose exec website py.test fnote --cov-report term-missing --cov`
+
+* py.test -p no:cacheprovider fnote

@@ -34,7 +34,6 @@ def create_app(settings_override=None):
     app.register_blueprint(note)
 
     db.app = app
-    init_db()  # TODO: better db creation script
 
     return app
 
@@ -53,3 +52,6 @@ def extensions(app):
     CORS(app)
 
     return None
+
+
+app = create_app()
