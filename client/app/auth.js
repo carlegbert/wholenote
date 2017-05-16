@@ -53,7 +53,7 @@ export function registerRequest(store) {
     contentType: 'application/json',
     data,
   }).done((res) => {
-    if (res.message.includes('verified')) {
+    if (res.msg.includes('verified')) {
       $('#main').html(`
         <div class="col-xs-6 col-xs-offset-3 reg-success text-center">
           <h3>Registration for ${email} successful.
