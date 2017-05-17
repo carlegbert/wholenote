@@ -127,7 +127,8 @@ class Note(db.Model):
         data = {'title': self.title,
                 'text': self.text,
                 'owner': self.user.email,
-                'id': self.title_id,
+                'titleId': self.title_id,
+                'id': hashids.encode(self.id),
                 'lastModified': self.last_modified,
                 }
         return data

@@ -71,9 +71,8 @@ export function updateNoteRequest(store) {
 
   const data = JSON.stringify({ title, text });
   const aTkn = store.getState().accessToken;
-  const id = selectedNote.id;
   $.ajax({
-    url: `/api/v1.0/notes/${id}`,
+    url: `/api/v1.0/notes/${selectedNote.titleId}`,
     type: 'PUT',
     headers: { Authorization: `Bearer ${aTkn}` },
     contentType: 'application/json',
@@ -82,7 +81,7 @@ export function updateNoteRequest(store) {
     renderNoteActionFeedback(`${title} has been saved`);
     store.dispatch(updateNote(res.note));
     if (oldTitle !== res.note.title) {
-      $(`#${id}`).html(res.note.title);
+      $(`#${note.id}`).html(res.note.title);
     }
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
@@ -92,16 +91,16 @@ export function updateNoteRequest(store) {
 }
 
 export function deleteNoteRequest(store) {
-  const id = store.getState().selectedNote.id;
+  const note = store.getState().selectedNote;
   const aTkn = store.getState().accessToken;
   $.ajax({
-    url: `/api/v1.0/notes/${id}`,
+    url: `/api/v1.0/notes/${note.titleId}`,
     type: 'DELETE',
     headers: { Authorization: `Bearer ${aTkn}` },
   }).done(() => {
     renderNoteActionFeedback(`${store.getState().selectedNote.title} has been deleted`);
-    store.dispatch(deleteNote(id));
-    $(`#${id}`).remove();
+    store.dispatch(deleteNote(note.id));
+    $(`#${note.id}`).remove();
     renderNoteDetail(store);
   }).fail((err) => {
     if (err.status === 401 && err.responseJSON.msg === 'Token has expired') {
