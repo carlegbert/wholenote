@@ -14,12 +14,12 @@ class TestPutNoteViews(object):
         note = Note(user.id, 'put_note', 'text').save()
         auth = {'Authorization': 'Bearer '+unfresh_token}
         url = '{0}/{1}'.format(URL, note.title)
-        data = {'title': 'new_title1', 'text': 'new_text'}
+        data = {'title': 'new_title', 'text': 'new_text'}
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
         assert response.status_code == 200
         assert response_data['note']
-        assert response_data['note']['title'] == 'new_title1'
+        assert response_data['note']['title'] == 'new_title'
         assert response_data['note']['text'] == 'new_text'
 
     def test_put_update_date(self, client, user, unfresh_token, session):
@@ -27,7 +27,7 @@ class TestPutNoteViews(object):
         old_date = note.last_modified
         auth = {'Authorization': 'Bearer '+unfresh_token}
         url = '{0}/{1}'.format(URL, note.title)
-        data = {'title': 'new_title2', 'text': 'new_text'}
+        data = {'title': 'new_title', 'text': 'new_text'}
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
         new_date = response_data['note']['lastModified']
@@ -37,13 +37,13 @@ class TestPutNoteViews(object):
         note = Note(user.id, 'title', 'text').save()
         auth = {'Authorization': 'Bearer '+unfresh_token}
         url = '{0}/{1}'.format(URL, note.title)
-        data = {'title': 'new_title3', 'text': 'new_text'}
+        data = {'title': 'new_title', 'text': 'new_text'}
         before_len = len(Note.query.all())
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
         after_len = len(Note.query.all())
         assert response.status_code == 200
-        assert response_data['note']['title'] == 'new_title3'
+        assert response_data['note']['title'] == 'new_title'
         assert after_len == before_len
 
     def test_put_note_with_refresh(self, client, user, refresh_token, session):
@@ -53,12 +53,12 @@ class TestPutNoteViews(object):
         unfresh_tkn = get_json(refresh)['access_token']
         auth = {'AUthorization': 'Bearer ' + unfresh_tkn}
         url = '{0}/{1}'.format(URL, note.title)
-        data = {'title': 'new_title4', 'text': 'new_text'}
+        data = {'title': 'new_title', 'text': 'new_text'}
         response = put_json(client, url, data, auth)
         response_data = get_json(response)
         assert response.status_code == 200
         assert response_data['note']
-        assert response_data['note']['title'] == 'new_title4'
+        assert response_data['note']['title'] == 'new_title'
         assert response_data['note']['text'] == 'new_text'
 
     def test_put_note_bad_data(self, client, user, unfresh_token, session):
@@ -105,4 +105,4 @@ class TestPutNoteViews(object):
         response_data = get_json(response)
         assert response.status_code == 200
         assert note2.title_id == 'duplicatetitle_2'
-        assert response_data['note']['id'] == 'duplicatetitle_2'
+        assert response_data['note']['titleId'] == 'duplicatetitle_2'

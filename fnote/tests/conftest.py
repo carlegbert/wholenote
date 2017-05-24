@@ -42,7 +42,7 @@ def client(app):
 
 
 @pytest.fixture(scope='function')
-def session(db):
+def session(db, request):
     """ Roll back db in between tests using nested session.
     This fixture should be used for any test that updates the
     database.
@@ -50,8 +50,13 @@ def session(db):
     :return: None
     """
     db.session.begin_nested()
-    yield db.session
-    db.session.rollback()
+
+    def teardown():
+        db.session.rollback()
+
+    request.addfinalizer(teardown)
+
+    return db.session
 
 
 @pytest.fixture(scope='session')
@@ -76,7 +81,7 @@ def db(app):
     return _db
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def user(db):
     """Return test user inserted in db fixture. For use in tests that use
     but will not mutate a user.
@@ -86,7 +91,7 @@ def user(db):
     return User.find_by_identity('testuser@localhost')
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def note(db):
     """Return test note inserted in db fixture. For use in tests that use but
     will not mutate a note.
@@ -96,7 +101,7 @@ def note(db):
     return Note.query.filter(Note.title == 'test_note').first()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def refresh_token(user):
     """Return refresh token from user fixture
     :param user: Pytest fixture
@@ -105,7 +110,7 @@ def refresh_token(user):
     return user.get_refresh_token()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def unfresh_token(user):
     """Return unfresh token from user fixture
     :param user: Pytest fixture
@@ -114,7 +119,7 @@ def unfresh_token(user):
     return user.get_access_token()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def fresh_token(user):
     """Return fresh token from user fixture
     :param user: Pytest fixture
@@ -123,7 +128,7 @@ def fresh_token(user):
     return user.get_access_token(True)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def auth_header():
     """Return dict object containing b64 encoded
     Basic Authorization header
@@ -134,7 +139,7 @@ def auth_header():
     return auth
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def hash_id(note):
     """Return hashed id from seed note
     :param note: Pytest fixture
@@ -143,7 +148,7 @@ def hash_id(note):
     return hashids.encode(note.id)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def mail(app):
     """Return configured mail object for use in tests
     :param app: Pytest fixture
