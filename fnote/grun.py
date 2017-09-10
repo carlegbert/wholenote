@@ -1,3 +1,5 @@
+#!venv/bin/python
+
 import os
 from multiprocessing import cpu_count
 

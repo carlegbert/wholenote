@@ -1,4 +1,4 @@
-[Wholenote](https://wholenoteapp.com "Wholenote") is a [Flask](http://flask.pocoo.org "Flask")-powered RESTful API for storing plaintext notes.
+[Wholenote](https://appdemo.carlegbert.com "Wholenote") is a [Flask](http://flask.pocoo.org "Flask")-powered RESTful API for storing plaintext notes.
 
 Written by [Carl Egbert](http://www.carlegbert.com) - [egbertcarl@gmail.com](mailto:egbertcarl@gmail)
 
@@ -13,17 +13,3 @@ and a refresh token. The refresh token should be securely stored by the client. 
 ### API Endpoints
 
 See documentation [here](API_ENDPOINTS.md)
-
-
-#### Running locally
-* You will need postgresql, python3, and virtualenv installed
-* Create dev and test postgres databases `fnote` and `fnote_test`
-* Rename `fnote/config/settings.py.example` to `fnote/config/settings.py` and change variable values in it as needed
-* `$ virtualenv -p /usr/bin/python3 venv`
-* `$ . venv/bin/activate`
-* `$ pip install -r requirements.txt`
-* `$ python fnote/grun.py` to run locally with gunicorn. Hosted at http://localhost:9000
-
-#### Running tests:
-
-* py.test -p no:cacheprovider fnote

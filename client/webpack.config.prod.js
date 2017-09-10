@@ -17,7 +17,7 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    path: path.join(__dirname, '../fnote/static/js'),
+    path: path.join(__dirname, '..', 'fnote', 'static', 'js'),
   },
   plugins: [
     new Webpack.optimize.OccurrenceOrderPlugin(true),

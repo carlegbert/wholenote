@@ -44,10 +44,14 @@ $(document).ready(() => {
     }
 
     if (ev.target.classList.contains('register')) {
+      $('#about-page').hide();
+      $('#main').show();
       renderRegisterForm(store);
     }
 
     if (ev.target.classList.contains('login')) {
+      $('#about-page').hide();
+      $('#main').show();
       renderLoginForm(store);
     }
 
